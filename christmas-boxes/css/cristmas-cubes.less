@@ -1,0 +1,253 @@
+
+///////////////////////////////////////////
+// Configuration
+///////////////////////////////////////////
+
+// The width and height and length of the cube (pixels)
+@cubesize: 100px;
+
+// The width of the card
+@cardWidth: (@cubesize + 20px);
+
+// The padding around the card
+@cardPadding: 5px;
+
+// How much to elevate the card
+@cardElevation: 150px;
+
+// The base background color for the front faces
+@colorFrontFace: #999;
+
+// The base background color for the back faces
+@colorBackFace: #333;
+
+// The letters in front of the box
+@colorLetters: #F93;
+
+// The image in the front
+@imgSideFaces:  url(present.png);
+@imgFrontFace:  url(present.png);
+@imgInnerFaces: none;
+
+///////////////////////////////////////////
+// Google Fonts
+///////////////////////////////////////////
+@import url(http://fonts.googleapis.com/css?family=Permanent+Marker);
+@import url(http://fonts.googleapis.com/css?family=Engagement);
+
+///////////////////////////////////////////
+// Mix-ins for cross-browser support
+///////////////////////////////////////////
+.perspective (@def) {
+	       perspective: @def;
+    -webkit-perspective: @def;
+      -moz-perspective: @def;
+	   -ms-perspective: @def;
+	    -o-perspective: @def;
+}
+.transform-style (@def) {
+	       transform-style: @def;
+    -webkit-transform-style: @def;
+      -moz-transform-style: @def;
+	   -ms-transform-style: @def;
+	    -o-transform-style: @def;
+}
+.transform (@def) {
+	       transform: @def;
+   -webkit-transform: @def;
+      -moz-transform: @def;
+	   -ms-transform: @def;
+	    -o-transform: @def;
+}
+.transition (@def) {
+	       transition: @def;
+   -webkit-transition: @def;
+      -moz-transition: @def;
+	   -ms-transition: @def;
+	    -o-transition: @def;
+}
+.backface-visibility (@def) {
+	       backface-visibility: @def;
+   -webkit-backface-visibility: @def;
+      -moz-backface-visibility: @def;
+	   -ms-backface-visibility: @def;
+	    -o-backface-visibility: @def;
+}
+
+///////////////////////////////////////////
+// Christmas host
+///////////////////////////////////////////
+
+.cb-host {
+	position: relative;
+	background: #eee;
+
+	// Fix font bug
+	-webkit-font-smoothing: antialiased;
+
+	// Set to a big value
+	.perspective( 1000px );
+
+	// Cube objet
+	a.cube {
+		width: @cubesize;
+		height: @cubesize;
+		position: absolute;
+		cursor: pointer;
+		color: #000;
+		text-decoration: none;
+
+		.transform-style(preserve-3d);
+		.transition(all 1s ease-in-out);
+
+		// Figures inside cube 
+		figure {
+			left: 0;
+			top: 0;
+			width: @cubesize;
+			height: @cubesize;
+			display: block;
+			position: absolute;
+			overflow: hidden;
+
+			.backface-visibility(hidden);
+		}
+
+		// Front faces
+		.f {
+			background-image: @imgSideFaces;
+			background-color: @colorFrontFace;
+		}
+
+		// Back faces
+		.b {
+			background-image: @imgInnerFaces;
+			background-color: @colorBackFace;
+		}
+
+		// Face definitions
+		.f.fr { 
+			.transform( translateZ( (@cubesize/2) ) );
+			background-image: @imgFrontFace;
+			background-color: lighten(@colorFrontFace, 20%);
+		}
+		.b.fr { 
+			.transform( rotateX(180deg) translateZ(-(@cubesize/2)) );
+			background-color: darken(@colorBackFace, 20%);
+		}
+
+		.f.bk { 
+			.transform( rotateY(180deg) translateZ((@cubesize/2)) );
+			background-color: darken(@colorFrontFace, 20%);
+		}
+		.b.bk { 
+			.transform( translateZ(-(@cubesize/2)) ); 
+			background-color: lighten(@colorBackFace, 20%);
+		}
+
+		.f.bt { 
+			.transform( rotateX(270deg) translateZ((@cubesize/2)) );
+		}
+		.b.bt { 
+			.transform( rotateX(90deg) translateZ(-(@cubesize/2)) ); 
+		}
+
+		.f.rt { 
+			.transform( rotateY(90deg) translateZ((@cubesize/2)) ); 
+			background-color: darken(@colorFrontFace, 10%);
+		}
+		.b.rt { 
+			.transform( rotateY(270deg) translateZ(-(@cubesize/2)) ); 
+			background-color: lighten(@colorBackFace, 10%);
+		}
+
+		.f.lt { 
+			.transform( rotateY(270deg) translateZ((@cubesize/2)) ); 
+			background-color: lighten(@colorFrontFace, 10%);
+		}
+		.b.lt { 
+			.transform( rotateY(90deg) translateZ(-(@cubesize/2)) );
+			background-color: darken(@colorBackFace, 10%);
+		}
+
+		// Number on the front face
+		.f.fr .num {
+			font-weight: bold;
+			font-size: 42px;
+			text-align: center;
+			margin-top: 14px;
+			font-family: 'Permanent Marker', cursive;
+			color: @colorLetters;
+		}
+
+		// Message note inside the cube
+		.message {
+
+			.transform( translateY(0px) rotateY(45deg) );
+			.transition( all 1s ease-in-out );
+
+			padding: @cardPadding;
+
+			font-family: 'Engagement', cursive;
+			background: #fff;
+			border: solid 1px #999;
+
+			width: (@cardWidth - @cardPadding*2);
+			height: (@cubesize - @cardPadding*2);
+			left: -((@cardWidth - @cardPadding*2 - @cubesize)/2);
+		}
+		.message h4 {
+			margin: 5px 0px;
+			padding: 0px;
+		}
+		.message p {
+			margin: 0px;
+			padding: 0px;
+		}
+
+		// Hover transitions
+		&:hover { 
+			.transform( rotateX(-45deg) rotateY(-45deg) );
+		}
+		&:hover .message {
+			.transform( translateY(-(@cardElevation)) translateX(-20px) rotateY(45deg) rotateX(50deg) );
+		}
+
+		// Compatibility mode
+		&.compat {
+
+			padding: 0px;
+			margin: 0px;
+
+			// Reset f-fr transformation
+			.f.fr { 
+				.transform( translateZ(0) translateX(0) translateZ(0) );
+				left: 0px;
+				top: 0px;
+			}
+
+			.message {
+				// Flip message
+				.transform( translateY(0px) rotateX(180deg) rotateY(0deg) );
+
+				// Reset dimentions
+				width: (@cubesize - @cardPadding*2);
+				height: (@cubesize - @cardPadding*2);
+				left: 0px;
+				top: 0px;
+			}
+
+			// Override hover transform
+			&:hover { 
+				.transform( rotateY(180deg) rotateX(0deg) );
+			}
+			&:hover .message {
+				.transform( translateY(0px) rotateX(180deg) rotateY(0deg) );
+			}
+
+		}
+
+
+	}
+
+}

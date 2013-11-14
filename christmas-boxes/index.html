@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Alice Test</title>
+		<link href="include/cristmas-cubes.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript">
+
+		/**
+		 * Constructor for the christmas boxes
+		 */
+		var ChristmasBoxes = function(width, height) {
+
+			// Check if we should enter IE-compatibility mode
+			this.compat = (navigator.appVersion.indexOf("MSIE") != -1);
+
+			// Create host element
+			this.host = document.createElement('div');
+			this.host.className = "cb-host";
+			this.host.style['width'] = width + 'px';
+			this.host.style['height'] = height + 'px';
+
+			// Append to DOM
+			document.body.appendChild(this.host);
+
+		};
+
+		/**
+		 * Function to allocate a box object
+		 */
+		ChristmasBoxes.prototype.addBox = function(x,y,label,title,text,url) {
+
+			// Check if we should use the IE-Compatible cube
+			var suffix = "";
+			if (this.compat) suffix = " compat";
+
+			// Create cube
+			var cube = document.createElement('a');
+			cube.className = 'cube' + suffix;
+			cube.style['left'] = x + 'pt';
+			cube.style['top'] = y + 'pt';
+			cube.href = url;
+			this.host.appendChild(cube);
+
+			// If we are in compatibility mode, add only a single
+			// face. Otherwise, implement the full message stack.
+			if (this.compat) {
+
+				// Append single face
+				var face = document.createElement('figure');
+				face.className = 'f fr';
+				cube.appendChild(face);
+
+				// Put the number in the face
+				var num = document.createElement('div');
+				num.className = 'num';
+				num.innerHTML = label;
+				face.appendChild(num);
+
+			} else {
+				// Append faces
+				var sides = ['f','b'];
+				var faces = ['fr','bk','rt','lt', 'bt'];
+				for (s=0;s<sides.length;s++){
+					for (f=0;f<faces.length;f++){
+						var face = document.createElement('figure');
+						face.className = sides[s] + ' ' + faces[f];
+						cube.appendChild(face);
+
+						// Append label to the front
+						if ((s==0) && (f==0)) {
+							var num = document.createElement('div');
+							num.className = 'num';
+							num.innerHTML = label;
+							face.appendChild(num);
+						}
+					}
+				}
+			}
+
+
+			// Create message node
+			var msg = document.createElement('figure');
+			msg.className = "message";
+			cube.appendChild(msg);
+
+			// Append title
+			var msgTitle = document.createElement('h4');
+			msgTitle.innerHTML = title;
+			msg.appendChild(msgTitle);
+
+			// Append text
+			var msgText = document.createElement('p');
+			msgText.innerHTML = text;
+			msg.appendChild(msgText);
+
+
+		}
+
+		window.onLoad = function() {
+
+			var b = new ChristmasBoxes(500, 500);
+			var y = 0;
+			for (var i=0; i<10; i++) {
+				b.addBox(
+						Math.random() * 500,
+						y,
+						i,
+						"Hello item " + i,
+						"This is the contents for item "+i+". The contents are supposed to be short",
+						"#link-"+i
+					);
+				y += Math.random() * 50;
+			}
+
+		};
+
+		</script>
+	</head>
+	<body>
+
+		<div style="height: 150px;"></div>
+
+	</body>
+</html>
