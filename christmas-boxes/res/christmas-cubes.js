@@ -56,13 +56,13 @@
 	 *
 	 *		x : The X-position of the cube in pixels
 	 *		y : The Y-position of the cube in pixels
-	 * 	  num : The number to put in front of the box
+	 * 	 lnum : The number to put in front of the box
 	 *	title : The title of the mssage inside the box
 	 *	 text : The text in the message inside the box
 	 *	  url : The URL to redirect to when clicked
 	 *
 	 */
-	ChristmasCubes.prototype.addCube = function(x,y,num,title,text,url) {
+	ChristmasCubes.prototype.addCube = function(x,y,lnum,title,text,url) {
 
 		// Check if we should use the IE-Compatible cube
 		var suffix = "";
@@ -80,6 +80,14 @@
 		// face. Otherwise, implement the full message stack.
 		if (this.compat) {
 
+			// Animation container
+			var anibox = document.createElement('div');
+			anibox.className = 'ani';
+			cube.appendChild(anibox);
+
+			// Replace cube
+			cube = anibox;
+
 			// Append single face
 			var face = document.createElement('figure');
 			face.className = 'f fr';
@@ -88,7 +96,7 @@
 			// Put the number in the face
 			var num = document.createElement('div');
 			num.className = 'num';
-			num.innerHTML = num;
+			num.innerHTML = lnum;
 			face.appendChild(num);
 
 		} else {
@@ -105,7 +113,7 @@
 					if ((s==0) && (f==0)) {
 						var num = document.createElement('div');
 						num.className = 'num';
-						num.innerHTML = num;
+						num.innerHTML = lnum;
 						face.appendChild(num);
 					}
 				}

@@ -2,7 +2,6 @@
 @import url(http://fonts.googleapis.com/css?family=Engagement);
 .cb-host {
   position: relative;
-  background: #eee;
   -webkit-font-smoothing: antialiased;
   perspective: 1000px;
   -webkit-perspective: 1000px;
@@ -17,6 +16,7 @@
   cursor: pointer;
   color: #000;
   text-decoration: none;
+  display: block;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   -moz-transform-style: preserve-3d;
@@ -47,7 +47,7 @@
   background-color: #999999;
 }
 .cb-host a.cube .b {
-  background-image: none;
+  background-image: url(img/inside.png);
   background-color: #333333;
 }
 .cb-host a.cube .f.fr {
@@ -58,6 +58,13 @@
   -o-transform: translateZ(50px);
   background-image: url(img/present-bow.png);
   background-color: #cccccc;
+}
+.cb-host a.cube:not(.compat) .f.fr {
+  transform: translateZ(50px);
+  -webkit-transform: translateZ(50px);
+  -moz-transform: translateZ(50px);
+  -ms-transform: translateZ(50px);
+  -o-transform: translateZ(50px);
 }
 .cb-host a.cube .b.fr {
   transform: rotateX(180deg) translateZ(-50px);
@@ -131,13 +138,20 @@
 }
 .cb-host a.cube .f.fr .num {
   font-weight: bold;
-  font-size: 42px;
   text-align: center;
-  margin-top: 14px;
   font-family: 'Permanent Marker', cursive;
+  font-size: 42px;
+  margin-top: 25px;
   color: #ff9933;
 }
 .cb-host a.cube .message {
+  padding: 5px;
+  background: #fff;
+  border: solid 1px #999;
+  width: 110px;
+  height: 90px;
+}
+.cb-host a.cube:not(.compat) .message {
   transform: translateY(0px) rotateY(45deg);
   -webkit-transform: translateY(0px) rotateY(45deg);
   -moz-transform: translateY(0px) rotateY(45deg);
@@ -148,30 +162,26 @@
   -moz-transition: all 1s ease-in-out;
   -ms-transition: all 1s ease-in-out;
   -o-transition: all 1s ease-in-out;
-  padding: 5px;
-  font-family: 'Engagement', cursive;
-  background: #fff;
-  border: solid 1px #999;
-  width: 110px;
-  height: 90px;
   left: -5px;
 }
 .cb-host a.cube .message h4 {
   margin: 5px 0px;
   padding: 0px;
+  font-family: 'Engagement', cursive;
 }
 .cb-host a.cube .message p {
   margin: 0px;
   padding: 0px;
+  font-family: 'Engagement', cursive;
 }
-.cb-host a.cube:hover {
+.cb-host a.cube:not(.compat):hover {
   transform: rotateX(-45deg) rotateY(-45deg);
   -webkit-transform: rotateX(-45deg) rotateY(-45deg);
   -moz-transform: rotateX(-45deg) rotateY(-45deg);
   -ms-transform: rotateX(-45deg) rotateY(-45deg);
   -o-transform: rotateX(-45deg) rotateY(-45deg);
 }
-.cb-host a.cube:hover .message {
+.cb-host a.cube:not(.compat):hover .message {
   transform: translateY(-150px) translateX(-20px) rotateY(45deg) rotateX(50deg);
   -webkit-transform: translateY(-150px) translateX(-20px) rotateY(45deg) rotateX(50deg);
   -moz-transform: translateY(-150px) translateX(-20px) rotateY(45deg) rotateX(50deg);
@@ -182,37 +192,64 @@
   padding: 0px;
   margin: 0px;
 }
-.cb-host a.cube.compat .f.fr {
-  transform: translateZ(0) translateX(0) translateZ(0);
-  -webkit-transform: translateZ(0) translateX(0) translateZ(0);
-  -moz-transform: translateZ(0) translateX(0) translateZ(0);
-  -ms-transform: translateZ(0) translateX(0) translateZ(0);
-  -o-transform: translateZ(0) translateX(0) translateZ(0);
+.cb-host a.cube.compat .ani {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+}
+.cb-host a.cube.compat .ani .f.fr {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  transform: perspective(1000px) rotateY(0deg);
+  -webkit-transform: perspective(1000px) rotateY(0deg);
+  -moz-transform: perspective(1000px) rotateY(0deg);
+  -ms-transform: perspective(1000px) rotateY(0deg);
+  -o-transform: perspective(1000px) rotateY(0deg);
+  transition: all 1s ease-in-out;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  margin: 0px;
   left: 0px;
   top: 0px;
 }
-.cb-host a.cube.compat .message {
-  transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -webkit-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -moz-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -ms-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -o-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  width: 90px;
-  height: 90px;
-  left: 0px;
-  top: 0px;
+.cb-host a.cube.compat .ani .message {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  transform: perspective(1000px) rotateY(-180deg);
+  -webkit-transform: perspective(1000px) rotateY(-180deg);
+  -moz-transform: perspective(1000px) rotateY(-180deg);
+  -ms-transform: perspective(1000px) rotateY(-180deg);
+  -o-transform: perspective(1000px) rotateY(-180deg);
+  transition: all 1s ease-in-out;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -ms-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  width: 98px;
+  height: 98px;
+  margin: 0px;
+  left: -5px;
+  top: -5px;
 }
-.cb-host a.cube.compat:hover {
-  transform: rotateY(180deg) rotateX(0deg);
-  -webkit-transform: rotateY(180deg) rotateX(0deg);
-  -moz-transform: rotateY(180deg) rotateX(0deg);
-  -ms-transform: rotateY(180deg) rotateX(0deg);
-  -o-transform: rotateY(180deg) rotateX(0deg);
+.cb-host a.cube.compat:hover .ani .f.fr {
+  transform: perspective(1000px) rotateY(180deg);
+  -webkit-transform: perspective(1000px) rotateY(180deg);
+  -moz-transform: perspective(1000px) rotateY(180deg);
+  -ms-transform: perspective(1000px) rotateY(180deg);
+  -o-transform: perspective(1000px) rotateY(180deg);
 }
-.cb-host a.cube.compat:hover .message {
-  transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -webkit-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -moz-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -ms-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
-  -o-transform: translateY(0px) rotateX(180deg) rotateY(0deg);
+.cb-host a.cube.compat:hover .ani .message {
+  transform: perspective(1000px) rotateY(0deg);
+  -webkit-transform: perspective(1000px) rotateY(0deg);
+  -moz-transform: perspective(1000px) rotateY(0deg);
+  -ms-transform: perspective(1000px) rotateY(0deg);
+  -o-transform: perspective(1000px) rotateY(0deg);
 }
