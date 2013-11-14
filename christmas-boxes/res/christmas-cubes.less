@@ -51,9 +51,12 @@
 
 // The general image for all the front faces
 @imgSideFaces:  url(img/present.png);
+@posSideFaces:  0px 0px;
 
 // The image from the front face (Where the number located)
 @imgFrontFace:  url(img/present-bow.png);
+//@posFrontFace:  -@cubesize 0px;
+@posFrontFace:  0px 0px;
 
 // The offset from top of the numbers
 @lettersOffset: 25px;
@@ -63,6 +66,8 @@
 
 // The image for the back faces (inside the box)
 @imgInnerFaces: url(img/inside.png);;
+//@posInnerFaces:  -(@cubesize*2) 0px;
+@posInnerFaces:  0px 0px;
 
 ///////////////////////////////////////////
 // Fonts
@@ -162,12 +167,14 @@
 		// Front faces
 		.f {
 			background-image: @imgSideFaces;
+			background-position: @posSideFaces;
 			background-color: @colorFrontFace;
 		}
 
 		// Back faces
 		.b {
 			background-image: @imgInnerFaces;
+			background-position: @posInnerFaces;
 			background-color: @colorBackFace;
 		}
 
@@ -175,6 +182,7 @@
 		.f.fr { 
 			.transform( translateZ( (@cubesize/2) ) );
 			background-image: @imgFrontFace;
+			background-position: @posFrontFace;
 			background-color: lighten(@colorFrontFace, 20%);
 		}
 		&:not(.compat) .f.fr {
