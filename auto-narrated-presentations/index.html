@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
+		<script type="text/javascript" src="../common/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="lib/editor.js"></script>
+		<script type="text/javascript">
+
+		var editor;
+
+		$(function() {
+			editor = new PresentationEditor("#editor");
+		});
+
+		function submitText() {
+			editor.buildText(
+				$("#textField").val(),
+				$("#voice").val()
+			);
+		}
+		</script>
+	</head>
+	<body>
+
+		<h1>Timeline editor</h1>
+		<fieldset>
+			<label>Create new timeline</label>
+			<p>Enter your text:</p>
+			<p>
+				<textarea id="textField">Hello world. This is a test to see how we can create a simple timeline based on vocal words. Does it look good?</textarea>
+				<br />
+				<select id="voice">
+					<option value="graham22k">UK - Graham</option>
+					<option value="harry22k">UK - Harry</option>
+					<option value="lucy22k">UK - Lucy</option>
+					<option value="nizareng22k">UK - Nizareng</option>
+					<option value="peter22k">UK - Peter</option>
+					<option value="peterhappy22k">UK - PeterHappy</option>
+					<option value="petersad22k">UK - PeterSad</option>
+					<option value="rachel22k">UK - Rachel</option>
+					<option value="ella22k">US - Ella</option>
+					<option value="heather22k" selected="selected">US - Heather</option>
+					<option value="josh22k">US - Josh</option>
+					<option value="will22k">US - Will</option>
+					<option value="willbadguy22k">US - WillBadGuy</option>
+					<option value="willfromafar22k">US - WillFromAfar</option>
+					<option value="willhappy22k">US - WillHappy</option>
+					<option value="willsad22k">US - WillSad</option>
+					<option value="tyler22k">Australia - Tyler</option>
+				</select>
+				<input type="button" value="Create Timeline" onclick="submitText()" />
+			</p>
+		</fieldset>
+
+		<div id="editor">
+
+		</div>
+
+	</body>
+</html>

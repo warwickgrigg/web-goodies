@@ -50,13 +50,24 @@
 @colorLetters: #F93;
 
 // The general image for all the front faces
-@imgSideFaces:  url(img/present.png);
+@imgSideFaces:  url(img/presents.png);
 @posSideFaces:  0px 0px;
 
 // The image from the front face (Where the number located)
-@imgFrontFace:  url(img/present-bow.png);
-//@posFrontFace:  -@cubesize 0px;
-@posFrontFace:  0px 0px;
+@imgFrontFace:  url(img/presents.png);
+@posFrontFace:  -(@cubesize*2) 0px;
+
+// The image from the bottom face
+@imgBottomFace:  url(img/presents.png);
+@posBottomFace:  -(@cubesize*4) 0px;
+
+// The image from the left face
+@imgLeftFace:  url(img/presents.png);
+@posLeftFace:  -@cubesize 0px;
+
+// The image from the left face
+@imgRightFace:  url(img/presents.png);
+@posRightFace:  -(@cubesize*3) 0px;
 
 // The offset from top of the numbers
 @lettersOffset: 25px;
@@ -204,6 +215,8 @@
 
 		.f.bt { 
 			.transform( rotateX(270deg) translateZ((@cubesize/2)) );
+			background-image: @imgBottomFace;
+			background-position: @posBottomFace;
 		}
 		.b.bt { 
 			.transform( rotateX(90deg) translateZ(-(@cubesize/2)) ); 
@@ -212,6 +225,8 @@
 		.f.rt { 
 			.transform( rotateY(90deg) translateZ((@cubesize/2)) ); 
 			background-color: darken(@colorFrontFace, 10%);
+			background-image: @imgRightFace;
+			background-position: @posRightFace;
 		}
 		.b.rt { 
 			.transform( rotateY(270deg) translateZ(-(@cubesize/2)) ); 
@@ -221,6 +236,8 @@
 		.f.lt { 
 			.transform( rotateY(270deg) translateZ((@cubesize/2)) ); 
 			background-color: lighten(@colorFrontFace, 10%);
+			background-image: @imgLeftFace;
+			background-position: @posLeftFace;
 		}
 		.b.lt { 
 			.transform( rotateY(90deg) translateZ(-(@cubesize/2)) );
