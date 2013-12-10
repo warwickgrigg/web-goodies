@@ -1,17 +1,18 @@
 <?php
 
-// --- SPECIFY THEESE ----
-$aLogin = "LOGIN";
-$aApp = "APP";
-$aPassword = "PASSWORD";
-// -----------------------
+// Import account info from the account.php
+$account = require("account.php");
+$aLogin = $account['login'];
+$aApp = $account['app'];
+$aPassword = $account['password'];
 
+// Base URL 
 $aBaseURL = "http://vaas.acapela-group.com/Services/Synthesizer";
 
 /**
  * Allocate a new acapella sound
  */
-function acapellaNew($text, $voiceName = 'heather22k', $soundType = 'MP3') {
+function acapellaNew($text, $voiceName = 'heather22k', $soundType = 'WAV') {
 	global $aLogin, $aApp, $aPassword, $aBaseURL;
 
 	// Prepare request

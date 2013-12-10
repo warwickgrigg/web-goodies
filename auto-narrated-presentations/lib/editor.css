@@ -12,8 +12,11 @@ div.peCore > div.peTimeline {
 
 div.peCore > div.peTimeline > div.wordframe {
 	position: absolute;
-	background: #999;
+	background: url(img/hatch.png);
+	border-top: solid 1px #999;
+	border-bottom: solid 1px #999;
 	margin: 0px;
+	padding: 0px;
 	top: 5px;
 	left: 0px;
 	height: 20px;
@@ -24,17 +27,18 @@ div.peCore > div.peTimeline > div.wordframe > span {
 	display: inline-block;
 	background: #fff;
 	padding: 2px;
-	margin: 1px 0px;
+	margin: 0px;
 
 	font-family: Tahoma;
 	font-size: 10px;
 	overflow: hidden;
+	text-align: center;
 
-	height: 14px;
+	height: 12px;
 }
 
 div.peCore > div.peTimeline > div.wordframe > span:nth-child(2n) {
-	background-color: #eee;
+	background-color: #dedede;
 }
 
 div.peCore > div.peTimeline > div.cursor {
