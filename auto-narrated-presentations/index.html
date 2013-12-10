@@ -3,13 +3,36 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
 		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/Clock.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineLogic.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineCanvas.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObject.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/StoryEditor.js"></script>
 		<script type="text/javascript" src="lib/editor.js"></script>
 		<script type="text/javascript">
 
 		var editor;
 
+		// Setup variables
+		var clock = new Clock();
+		var timelineLogic = new TimelineLogic( clock );
+
+		var t1 = new TimelineTween("first", 0, 1000);
+		var t2 = new TimelineTween("second", 1000, 1000);
+
+		var data = {"id":"360347647_d397f013c63e1","soundURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wav","wordURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wp.txt","duration":"8300.77","size":"366112","words":[["49","Hello"],["397","world."],["1553","This"],["1761","is"],["1874","a"],["1927","test"],["2561","to"],["2703","see"],["3017","how"],["3175","we"],["3281","can"],["3479","create"],["3871","a"],["3918","simple"],["4375","timeline"],["4943","based"],["5291","on"],["5462","vocal"],["5807","words."],["6933","Does"],["7117","it"],["7249","look"],["7442","good?"]],"res":"ok"};
+
+		var t3 = new TimelineWords( data );
+
+		// Let the magic begin!
+		//clock.start();
+
 		$(function() {
-			editor = new PresentationEditor("#editor");
+			editor = new StoryEditor("#editor");
+			//editor.timeline.logic.add(t1);
+			//editor.timeline.logic.add(t2);
+			editor.timeline.logic.add(t3);
 		});
 
 		function submitText() {

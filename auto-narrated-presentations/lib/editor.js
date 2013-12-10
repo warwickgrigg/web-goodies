@@ -194,7 +194,7 @@
 		this.elmCanvas.append( this.cvCanvas );
 
 		// Setup UI update timer
-		this.updateTimer = setInterval(this.updateUI.bind(this), 125);
+		this.updateTimer = setInterval(this.updateUI.bind(this), 16);
 
 	};
 
