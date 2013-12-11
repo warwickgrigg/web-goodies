@@ -95,14 +95,12 @@
 		$(this.logic).on('objectAdded', (function(e, object, index) {
 
 			if ( object instanceof TimelineWords ) {
-
-				// Words have a different renderer
+				// TimelineWords Renderer
 				this.wordObjects.push( new VisualWords( object, this ) );
 
-			} else {
-
-				// Otherwise use the classic renderer
-				this.visualObjects.push( new VisualObject( object, this ) );
+			} else if ( object instanceof KeyframeAnimation ) {
+				// KeyframeAnimation Renderer
+				this.visualObjects.push( new VisualKeyframes( object, this ) );
 
 			}
 
@@ -111,17 +109,8 @@
 		// When an object is changed, update the visual representation of it
 		$(this.logic).on('objectChanged', (function(e, object, index) {
 
-			if ( object instanceof TimelineWords ) {
-
-				// Words have a different renderer
-				//this.wordObjects.push( new VisualWords( object, this ) );
-
-			} else {
-
-				// Otherwise use the classic renderer
-				//this.visualObjects.push( new VisualObject( object, this ) );
-
-			}
+			// Redraw stack
+			this.redraw();
 
 		}).bind(this));
 
@@ -194,6 +183,8 @@
 
 		// Reset states when mouse is out
 		$(this.canvas).mouseout( (function(e) {
+
+			if (this.dragging) return;
 
 			this.hoverScrollbar = false;
 			this.cursorPos = -1;

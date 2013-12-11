@@ -21,8 +21,10 @@
 		<script type="text/javascript" src="lib/editor.js.src/SceneObjects/ImageObject.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineObject.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects/Words.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects/KeyframeAnimation.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineVisual.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineVisuals/Words.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineVisuals/KeyframeAnimation.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineControls.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/StoryEditor.js"></script>
 		<script type="text/javascript" src="lib/editor.js"></script>
@@ -47,10 +49,12 @@
 		var im1 = new Image();
 		im1.src = "http://icons.iconarchive.com/icons/gianni-polito/brush-adium/128/Adium-Away-icon.png";
 		var s1 = new ImageObject( im1 );
+		var t4 = new KeyframeAnimation( s1 );
 
 		var im2 = new Image();
-		im2.src = "http://icons.iconarchive.com/icons/gianni-polito/brush-adium/128/Adium-Away-icon.png";
+		im2.src = "http://icons.iconarchive.com/icons/gianni-polito/lava-lamp/128/lamp-pink-glitters-icon.png";
 		var s2 = new ImageObject( im2 );
+		var t5 = new KeyframeAnimation( s2 );
 
 		// Let the magic begin!
 		//clock.start();
@@ -60,6 +64,8 @@
 			//editor.timeline.logic.add(t1);
 			//editor.timeline.logic.add(t2);
 			editor.timelineLogic.add(t3);
+			editor.timelineLogic.add(t4);
+			editor.timelineLogic.add(t5);
 
 			editor.sceneCanvas.add( s1 );
 			editor.sceneCanvas.add( s2 );

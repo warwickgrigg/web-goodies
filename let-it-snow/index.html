@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>CSS3 Keyframe Animation Test</title>
+		<style type="text/css">
+		@keyframes star {
+			0%	{ left: 0px; top: -50px; }
+			10%	{ left: -15.45px; top: -17px; }
+			20%	{ left: -50px; top: -11.8px; }
+			30%	{ left: -25px; top: 13.82px; }
+			40%	{ left: -30.9px; top: 50px; }
+			50%	{ left: 0px; top: 32.92px; }
+			60%	{ left: 30.9px; top: 50px; }
+			70%	{ left: 25px; top: 13.82px; }
+			80%	{ left: 50px; top: -11.8px; }
+			90%	{ left: 15.45px; top: -17.08px; }
+		   100%	{ left: 0px; top: -50px; }
+		}
+		@-webkit-keyframes star {
+			0%	{ left: 0px; top: -50px; }
+			10%	{ left: -15.45px; top: -17px; }
+			20%	{ left: -50px; top: -11.8px; }
+			30%	{ left: -25px; top: 13.82px; }
+			40%	{ left: -30.9px; top: 50px; }
+			50%	{ left: 0px; top: 32.92px; }
+			60%	{ left: 30.9px; top: 50px; }
+			70%	{ left: 25px; top: 13.82px; }
+			80%	{ left: 50px; top: -11.8px; }
+			90%	{ left: 15.45px; top: -17.08px; }
+		   100%	{ left: 0px; top: -50px; }
+		}
+
+		.star {
+			font-size: 40px;
+			position: relative;
+			animation: star 10s linear infinite;
+			-webkit-animation: star 10s linear infinite;
+			display: inline-block;
+		    animation-play-state: running;
+		}
+
+		.star:hover {
+		    animation-play-state: paused;
+		}
+		
+		.p1 { position: absolute; left: 200px; top: 50px; }
+		.p2 { position: absolute; left: 600px; top: 400px; }
+		.p3 { position: absolute; left: 900px; top: 200px; }
+
+		.p2 > .star { animation-delay: -1s;}
+		.p3 > .star { animation-delay: -3s;}
+
+		</style>
+	</head>
+	<body>
+
+		<div class="p1">
+			<iframe class="star" width="560" height="315" src="//www.youtube.com/embed/KKagpB6JDWs" frameborder="0" allowfullscreen></iframe>			
+		</div>
+		<div class="p2">
+			<iframe class="star" width="420" height="315" src="//www.youtube.com/embed/Q2IPMFV4LoA" frameborder="0" allowfullscreen></iframe>
+		</div>
+		<div class="p3">
+			<iframe class="star" width="560" height="315" src="//www.youtube.com/embed/7GwMRzcpuXM" frameborder="0" allowfullscreen></iframe>
+		</div>
+
+	</body>
+</html>

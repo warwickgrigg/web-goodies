@@ -55,6 +55,7 @@
 		// Calculate delta
 		var delta = t - this.currentTime;
 		this.currentTime = t;
+		this.lastFrameTime = 0;
 
 		// Fire tick handlers
 		for (var i=0; i<this.tickCallbacks.length; i++) {

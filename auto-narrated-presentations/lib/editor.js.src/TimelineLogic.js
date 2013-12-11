@@ -74,9 +74,12 @@
 		if (nextFrame > this.frameCount) {
 			if (!this.loop) {
 				this.clock.stop();
-				return;
+			} else {
+				this.clock.stop();
+				this.clock.set(0);
+				this.clock.start();
 			}
-			this.clock.set(0);
+			return;
 		}
 
 		// Check if we really changed frame
@@ -230,6 +233,9 @@
 				this.reIndex( object, objectIndex );
 			}).bind(this);
 		}
+
+		// Let the object know that it was placed
+		object.onPlace( this );
 
 		// Rebuild index
 		this.rebuildIndex();
