@@ -44,6 +44,8 @@
 			'left': x, 'top': y,
 			'right': x+w, 'bottom': y+h,
 			'width': w, 'height': h,
+			'centerx' : x + w/2,
+			'centery' : y + h/2,
 			'rotation': this.renderVariables.rotation*Math.PI/180
 		};
 

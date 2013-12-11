@@ -43,10 +43,9 @@
 		// Dragging 
 		this.dragging = false;
 		this.dragMode = 0;
-		this.dragRefX = 0;
-		this.dragRefY = 0;
 		this.dragMouseX = 0;
 		this.dragMouseY = 0;
+		this.dragRef = null;
 
 		// Set initial size
 		this.resize( 800, 400 );
@@ -72,10 +71,11 @@
 		$(this.canvas).mousedown((function(e) {
 			var ctrlPoint = this.controlElementFromPoint( e.offsetX, e.offsetY ),
 				focusObject = this.objectFromPoint( e.offsetX, e.offsetY );
+			console.log(ctrlPoint);
 
 			// Defocus object only if we are not hitting any control point
-			if ((focusObject == null) && (this.controlObject != null) && (ctrlPoint == 0)) {
-				this.controlObject = null;
+			if ((focusObject == null) && (this.controlObject != null) && (ctrlPoint != 0)) {
+				// Keep it
 			} else {
 				this.controlObject = focusObject;
 			}
@@ -93,8 +93,15 @@
 					this.dragMouseX = e.offsetX;
 					this.dragMouseY = e.offsetY;
 
-					this.dragRefX = this.controlObject.variables.x;
-					this.dragRefY = this.controlObject.variables.y;
+					// Keep the reference information
+					this.dragRef = {
+						w: this.controlObject.width,
+						h: this.controlObject.height,
+						x: this.controlObject.variables.x,
+						y: this.controlObject.variables.y,
+						sx: this.controlObject.variables.scalex,
+						sy: this.controlObject.variables.scaley
+					}
 
 				} else {
 					// [2] Start moving object
@@ -102,10 +109,14 @@
 					// Setup dragger
 					this.dragging = true;
 					this.dragMode = 0;
-					this.dragRefX = this.controlObject.variables.x;
-					this.dragRefY = this.controlObject.variables.y;
 					this.dragMouseX = e.offsetX;
 					this.dragMouseY = e.offsetY;
+
+					// Keep reference the old position
+					this.dragRef = {
+						x: this.controlObject.variables.x,
+						y: this.controlObject.variables.y,
+					}
 
 					$(this.canvas).css('cursor', 'move');
 
@@ -122,15 +133,45 @@
 
 			if (this.dragging) {
 
-				// Calculate the new drag values
-				var dragX = this.dragRefX + (e.offsetX - this.dragMouseX),
-					dragY = this.dragRefY + (e.offsetY - this.dragMouseY);
+				// Calculate the difference between the two mouse positions
+				var diffX = e.offsetX - this.dragMouseX,
+					diffY = e.offsetY - this.dragMouseY;
 
 				// Check what kind of drag do we have
 				if (this.dragMode == 0) {
 
-					this.controlObject.variables.x = dragX;
-					this.controlObject.variables.y = dragY;
+					// Calculate the new drag values
+					this.controlObject.variables.x = this.dragRef.x + diffX,
+					this.controlObject.variables.y = this.dragRef.y + diffY;
+
+				} else if (this.dragMode <= 4) {
+
+					if (this.dragMode == 1) { // Top-left anchor -> x:-, y:-
+						this.controlObject.variables.scalex = (-diffX / this.controlObject.width) + this.dragRef.sx;
+						this.controlObject.variables.scaley = (-diffY / this.controlObject.height) + this.dragRef.sy;
+						this.controlObject.variables.x = this.dragRef.x + diffX/2;
+						this.controlObject.variables.y = this.dragRef.y + diffY/2;
+
+					} else if (this.dragMode == 2) { // Top-Right anchor -> x:+, y:-
+						this.controlObject.variables.scalex = (diffX / this.controlObject.width) + this.dragRef.sx;
+						this.controlObject.variables.scaley = (-diffY / this.controlObject.height) + this.dragRef.sy;
+						this.controlObject.variables.x = this.dragRef.x + diffX/2;
+						this.controlObject.variables.y = this.dragRef.y + diffY/2;
+
+					} else if (this.dragMode == 3) { // Bottom-Right anchor -> x:+, y:-
+						this.controlObject.variables.scalex = (-diffX / this.controlObject.width) + this.dragRef.sx;
+						this.controlObject.variables.scaley = (diffY / this.controlObject.height) + this.dragRef.sy;
+						this.controlObject.variables.x = this.dragRef.x + diffX/2;
+						this.controlObject.variables.y = this.dragRef.y + diffY/2;
+
+					} else if (this.dragMode == 4) { // Bottom-Right anchor -> x:+, y:-
+						this.controlObject.variables.scalex = (diffX / this.controlObject.width) + this.dragRef.sx;
+						this.controlObject.variables.scaley = (diffY / this.controlObject.height) + this.dragRef.sy;
+						this.controlObject.variables.x = this.dragRef.x + diffX/2;
+						this.controlObject.variables.y = this.dragRef.y + diffY/2;
+
+					}
+
 
 				}
 
