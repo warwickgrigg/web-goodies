@@ -32,144 +32,6 @@
 	};
 
 	/**
-	 * Visual object that encapsulates timeline objects
-	 */
-	var VisualObject = function( timelineObject, timeline ) {
-		this.timeline = timeline;
-		this.wrapped = timelineObject;
-
-		this.beginFrame = this.timeline.logic.frameOf( this.wrapped.beginTime() );
-		this.endFrame = this.timeline.logic.frameOf( this.wrapped.endTime() );
-	}
-
-	/**
-	 * Check if the object is within the visible region
-	 */
-	VisualObject.prototype.isVisible = function() {
-
-		// The object boundaries
-		var vBegin = this.wrapped.beginTime() / this.timeline.scale,
-			vEnd = this.wrapped.endTime() / this.timeline.scale;
-
-		// The timeline boundaries
-		var sBegin = -this.timeline.scrollX,
-			sEnd = sBegin + this.timeline.width;
-
-		// Check
-		return ( ((vBegin >= sBegin) && (vBegin <= sEnd)) ||  // Somebody can see our beginning
-				 ((vEnd >= sBegin) && (vEnd <= sEnd)) || 	  // Somebody can see our ending
-				 ((vBegin <= sBegin) && (vEnd >= sEnd)) );	  // The object is entirely inside the view
-	}
-
-	/**
-	 * Render context
-	 */
-	VisualObject.prototype.render = function( ctx, x, y, height, scale ) {
-
-		// The object boundaries
-		var vBegin = this.wrapped.beginTime() / this.timeline.scale + this.timeline.scrollX;
-
-	}
-
-	/**
-	 * Handle mouse move event
-	 * The coordinates are on time and frame values.
-	 */
-	VisualObject.prototype.mouseMove = function( xTime, xFrame ) {
-
-	}
-
-	/**
-	 * Handle mouse down event
-	 * The coordinates are on time and frame values.
-	 */
-	VisualObject.prototype.mouseDown = function( xTime, xFrame ) {
-
-	}
-
-	/**
-	 * Handle mouse up event
-	 * The coordinates are on time and frame values.
-	 */
-	VisualObject.prototype.mouseUp = function( xTime, xFrame ) {
-
-	}
-
-	/**
-	 * A Voice object encapsulates a sound object
-	 */
-	var WordsObject = function( voiceObject, timeline ) {
-		VisualObject.call( this, voiceObject, timeline );
-	}
-
-	WordsObject.prototype = Object.create( VisualObject.prototype );
-
-	/**
-	 * Render context
-	 */
-	WordsObject.prototype.render = function( ctx, x, y, height, scale ) {
-
-		// Start rendering elements
-		var l,w,focus;
-		var c=0, cTime=this.wrapped.beginTime();
-
-		// Draw background
-		ctx.fillStyle = this.timeline.palette.wordColors[c];
-		ctx.fillRect( x,y, parseInt(this.wrapped.duration)*scale ,height );
-
-		// Draw boxes
-		for (var i=0; i<this.wrapped.words.length; i++) {
-			var word = this.wrapped.words[i];
-
-			// Calculate left and width
-			if ( i+1 >= this.wrapped.words.length ) {
-				l = parseInt(word[0]);
-				w = parseInt(this.wrapped.duration) - l;
-			} else {
-				l = parseInt(word[0]);
-				w = parseInt(this.wrapped.words[i+1][0]) - l;
-			}
-
-			// Check if we should be focused
-			focus =  (this.timeline.playbackPos-cTime >= l) && (this.timeline.playbackPos-cTime <= l+w);
-
-			// Apply scale and offset
-			l = l*scale + x;
-			w = w*scale;
-
-			// Draw rect
-			if (focus) {
-				ctx.fillStyle = this.timeline.palette.focusedWordBack;
-			} else {
-				ctx.fillStyle = this.timeline.palette.wordColors[c];
-			}
-			ctx.fillRect( l,y,w,height );
-
-			// Draw font
-			ctx.textAlign = "start"; 
-			ctx.textBaseline = "middle";
-			ctx.font = this.timeline.palette.wordFont;
-			if (focus) {
-				ctx.fillStyle = this.timeline.palette.focusedWordFront;
-			} else {
-				ctx.fillStyle = this.timeline.palette.wordFontColor;
-			}
-			ctx.fillText( word[1], l+2, y+height/2 );
-
-			// Pick next color for the word
-			if (++c >= this.timeline.palette.wordColors.length) c=0;
-
-		}
-
-		// Draw frame
-		ctx.strokeStyle = this.timeline.palette.wordBorder;
-		ctx.lineWidth = 1;
-		ctx.strokeRect( x,y,w+l-x,height );
-
-
-	}
-
-	/**
 	 * The timeline canvas is the clock source and
 	 */
 	var TimelineCanvas = glob.TimelineCanvas = function( logic ) {
@@ -231,7 +93,7 @@
 			if ( object instanceof TimelineWords ) {
 
 				// Words have a different renderer
-				this.wordObjects.push( new WordsObject( object, this ) );
+				this.wordObjects.push( new VisualWords( object, this ) );
 
 			} else {
 
@@ -248,7 +110,7 @@
 			if ( object instanceof TimelineWords ) {
 
 				// Words have a different renderer
-				//this.wordObjects.push( new WordsObject( object, this ) );
+				//this.wordObjects.push( new VisualWords( object, this ) );
 
 			} else {
 
