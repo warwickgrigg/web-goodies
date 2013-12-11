@@ -24,10 +24,20 @@
 	}
 
 	/**
+	 * This function updates the visual representation of the object on the stage and on the timeline.
+	 * Placeholder function that will be replaced upon insertion on timeline logic.
+	 */
+	TimelineObject.prototype.updateTimeline = function() {
+
+	}
+
+	/**
 	 * Callback functions from the timeline logic
 	 */
 	TimelineObject.prototype.onUpdate = function( timeline, delta, frame, time ) { }
 	TimelineObject.prototype.onEnter = function( timeline ) { }
 	TimelineObject.prototype.onExit = function( timeline ) { }
+	TimelineObject.prototype.onPlaying = function( timeline ) { }
+	TimelineObject.prototype.onPaused = function( timeline ) { }
 
 })(window);

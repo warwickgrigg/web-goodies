@@ -22,6 +22,10 @@
 		this.timeline = new TimelineCanvas( this.timelineLogic );
 		$(this.container).append( this.timeline.canvas );
 
+		// Setup timeline controls
+		this.timelineControls = new TimelineControls( this.timelineLogic );
+		$(this.container).append( this.timelineControls.element );
+
 		// Set the proper dimentions
 		this.resize();
 

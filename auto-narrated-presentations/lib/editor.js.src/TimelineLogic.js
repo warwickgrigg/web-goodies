@@ -14,7 +14,25 @@
 		this.frameWidth = 1000 / this.fps;
 
 		// Bind clock events
-		this.clock.onTick( this.onTick.bind(this) );
+		this.clock.onTick( (function(time,delta) { this.handleTick(time,delta) } ).bind(this) );
+
+		// Register a notification when the clock starts
+		$(this.clock).on('clockStart', (function(){
+			// Let all timeline objects know that we started
+			for (var i=0; i<this.timelineObjects.length; i++) {
+				this.timelineObjects[i].onPlaying( this );
+			}
+
+		}).bind(this));
+
+		// Register a notification when the clock stops
+		$(this.clock).on('clockStop', (function(){
+			// Let all timeline objects know that we are paused
+			for (var i=0; i<this.timelineObjects.length; i++) {
+				this.timelineObjects[i].onPaused( this );
+			}
+
+		}).bind(this));
 
 		// The timeline objects and the lookup table for them
 		this.timelineObjects = [ ];
@@ -31,20 +49,20 @@
 	 * Convert time (in milliseconds) into a frame index
 	 */
 	TimelineLogic.prototype.frameOf = function( time ) {
-		return parseInt(Math.round( time / this.frameWidth ));
+		return parseInt(Math.floor( time / this.frameWidth ));
 	}
 
 	/**
 	 * Snap time (in milliseconds) in frame-sized chunks
 	 */
 	TimelineLogic.prototype.frameSnap = function( time ) {
-		return parseInt(Math.round( time / this.frameWidth ) * this.frameWidth);
+		return parseInt(Math.floor( time / this.frameWidth ) * this.frameWidth);
 	}
 
 	/**
 	 * Clock ticks
 	 */
-	TimelineLogic.prototype.onTick = function( time, delta ) {
+	TimelineLogic.prototype.handleTick = function( time, delta ) {
 
 		// If we have no frames, do nothing
 		if (this.timelineFrames.length == 0) return;
@@ -54,8 +72,11 @@
 
 		// Check for out-of-bounds
 		if (nextFrame > this.frameCount) {
-			if (!this.loop) return;
-			nextFrame = nextFrame % this.frameCount;
+			if (!this.loop) {
+				this.clock.stop();
+				return;
+			}
+			this.clock.set(0);
 		}
 
 		// Check if we really changed frame
@@ -112,8 +133,11 @@
 	 */
 	TimelineLogic.prototype.reIndex = function( object, lastIndex ) {
 		var index = object;
-		if (typeof(index) != "number")
+		if (typeof(index) != "number") {
 			index = this.timelineObjects.indexOf(object);
+		} else {
+			object = this.timelineObjects[index];
+		}
 
 		// Remove from previous indices
 		if (object.__timelineBounds !== undefined) {
@@ -143,6 +167,9 @@
 
 		// Update bounds
 		object.__timelineBounds = [ firstFrame, lastFrame ];
+
+		// Fire object changed for this object
+		$(this).trigger('objectChanged', object, index );
 
 	}
 
@@ -207,7 +234,7 @@
 		// Rebuild index
 		this.rebuildIndex();
 
-		// Check if the object exists in the current frame
+		// Check if the object exists in the current frame and show it.
 		var fBegin = this.frameOf( object.beginTime() ),
 			fEnd = this.frameOf( object.endTime() );
 		if ((this.currentFrame >= fBegin) && (this.currentFrame <= fEnd)) {
@@ -217,6 +244,13 @@
 
 		// Let people know that we have added an object
 		$(this).trigger('objectAdded', object, objectIndex );
+
+		// If the clock is already running, let the object know
+		if (this.clock.running) {
+			object.onPlaying( this );
+		} else {
+			object.onPaused( this );
+		}
 
 	}
 

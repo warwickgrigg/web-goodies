@@ -33,8 +33,10 @@
 	 * Start big ben
 	 */
 	Clock.prototype.start = function() {
+		this.lastFrameTime = 0;
 		this.running = true;
 		this.scheduleTick();
+		$(this).trigger('clockStart');
 	}
 
 	/**
@@ -42,6 +44,7 @@
 	 */
 	Clock.prototype.stop = function() {
 		this.running = false;
+		$(this).trigger('clockStop');
 	}
 
 	/**

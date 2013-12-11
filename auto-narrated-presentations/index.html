@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
+
+		<!-- Meta info -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- External libraries from CDN -->
 		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+		<!-- Development sources -->
+		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
 		<script type="text/javascript" src="lib/editor.js.src/Clock.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineLogic.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineCanvas.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineObject.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineControls.js"></script>
 		<script type="text/javascript" src="lib/editor.js.src/StoryEditor.js"></script>
 		<script type="text/javascript" src="lib/editor.js"></script>
 		<script type="text/javascript">
 
 		var editor;
-
-		// Setup variables
-		var clock = new Clock();
-		var timelineLogic = new TimelineLogic( clock );
 
 		var t1 = new TimelineTween("first", 0, 1000);
 		var t2 = new TimelineTween("second", 1000, 1000);
@@ -32,7 +39,7 @@
 			editor = new StoryEditor("#editor");
 			//editor.timeline.logic.add(t1);
 			//editor.timeline.logic.add(t2);
-			editor.timeline.logic.add(t3);
+			editor.timelineLogic.add(t3);
 		});
 
 		function submitText() {
@@ -41,41 +48,50 @@
 				$("#voice").val()
 			);
 		}
+		
+		function change() {
+			
+		}
+
 		</script>
 	</head>
 	<body>
 
-		<h1>Timeline editor</h1>
-		<fieldset>
-			<label>Create new timeline</label>
-			<p>Enter your text:</p>
-			<p>
-				<textarea id="textField" rows="5" cols="80">Hello world. This is a test to see how we can create a simple timeline based on vocal words. Does it look good?</textarea>
-				<br />
-				<select id="voice">
-					<option value="graham22k">UK - Graham</option>
-					<option value="harry22k">UK - Harry</option>
-					<option value="lucy22k">UK - Lucy</option>
-					<option value="nizareng22k">UK - Nizareng</option>
-					<option value="peter22k">UK - Peter</option>
-					<option value="peterhappy22k">UK - PeterHappy</option>
-					<option value="petersad22k">UK - PeterSad</option>
-					<option value="rachel22k">UK - Rachel</option>
-					<option value="ella22k">US - Ella</option>
-					<option value="heather22k" selected="selected">US - Heather</option>
-					<option value="josh22k">US - Josh</option>
-					<option value="will22k">US - Will</option>
-					<option value="willbadguy22k">US - WillBadGuy</option>
-					<option value="willfromafar22k">US - WillFromAfar</option>
-					<option value="willhappy22k">US - WillHappy</option>
-					<option value="willsad22k">US - WillSad</option>
-					<option value="tyler22k">Australia - Tyler</option>
-				</select>
-				<input type="button" value="Create Timeline" onclick="submitText()" />
-			</p>
-		</fieldset>
+	    <div class="container">
 
-		<div id="editor">
+			<h1>Timeline editor</h1>
+			<fieldset>
+				<label>Create new timeline</label>
+				<p>Enter your text:</p>
+				<p>
+					<textarea id="textField" rows="5" cols="80">Hello world. This is a test to see how we can create a simple timeline based on vocal words. Does it look good?</textarea>
+					<br />
+					<select id="voice">
+						<option value="graham22k">UK - Graham</option>
+						<option value="harry22k">UK - Harry</option>
+						<option value="lucy22k">UK - Lucy</option>
+						<option value="nizareng22k">UK - Nizareng</option>
+						<option value="peter22k">UK - Peter</option>
+						<option value="peterhappy22k">UK - PeterHappy</option>
+						<option value="petersad22k">UK - PeterSad</option>
+						<option value="rachel22k">UK - Rachel</option>
+						<option value="ella22k">US - Ella</option>
+						<option value="heather22k" selected="selected">US - Heather</option>
+						<option value="josh22k">US - Josh</option>
+						<option value="will22k">US - Will</option>
+						<option value="willbadguy22k">US - WillBadGuy</option>
+						<option value="willfromafar22k">US - WillFromAfar</option>
+						<option value="willhappy22k">US - WillHappy</option>
+						<option value="willsad22k">US - WillSad</option>
+						<option value="tyler22k">Australia - Tyler</option>
+					</select>
+					<input type="button" value="Create Timeline" onclick="submitText()" />
+				</p>
+			</fieldset>
+
+			<div class="well well-sm">
+				<div id="editor"></div>
+			</div>
 
 		</div>
 

@@ -7,12 +7,27 @@
 	var TimelinePalette = {
 
 		background 		: '#EFEFEF',
-		gridLine 		: '#D0D0D0',
-		gridLineStrong	: '#CFCFCF',
 		cursorLine		: '#999999',
 
-		scrollOuter 	: '#999999',
-		scrollInner		: '#CCCCCC'
+		gridLine 		: '#D0D0D0',
+		gridLineStrong	: '#CFCFCF',
+		gridLabelFont	: '8px Tahoma',
+		gridLabelColor	: '#D0D0D0',
+
+		scrollOuter 	: '#AAAAAA',
+		scrollInner		: '#FFFFFF',
+		scrollUnfocused : '#BBBBBB',
+
+		playbackBack	: '#F0DDDD',
+		playbackLine	: '#FF0000',
+
+		wordColors		: [ '#FFFFFF', '#D0D0D0' ],
+		wordFont		: '10pt Tahoma',
+		wordFontColor	: '#333333',
+		wordBorder		: '#333333',
+
+		focusedWordBack	: '#FF9900',
+		focusedWordFront: '#FFFFFF'
 
 	};
 
@@ -22,6 +37,9 @@
 	var VisualObject = function( timelineObject, timeline ) {
 		this.timeline = timeline;
 		this.wrapped = timelineObject;
+
+		this.beginFrame = this.timeline.logic.frameOf( this.wrapped.beginTime() );
+		this.endFrame = this.timeline.logic.frameOf( this.wrapped.endTime() );
 	}
 
 	/**
@@ -34,7 +52,7 @@
 			vEnd = this.wrapped.endTime() / this.timeline.scale;
 
 		// The timeline boundaries
-		var sBegin = this.timeline.offsetX,
+		var sBegin = -this.timeline.scrollX,
 			sEnd = sBegin + this.timeline.width;
 
 		// Check
@@ -46,11 +64,34 @@
 	/**
 	 * Render context
 	 */
-	VisualObject.prototype.render = function( ctx, y, height ) {
-		
+	VisualObject.prototype.render = function( ctx, x, y, height, scale ) {
+
 		// The object boundaries
-		var vBegin = this.wrapped.beginTime() / this.timeline.scale,
-			vEnd = this.wrapped.endTime() / this.timeline.scale;
+		var vBegin = this.wrapped.beginTime() / this.timeline.scale + this.timeline.scrollX;
+
+	}
+
+	/**
+	 * Handle mouse move event
+	 * The coordinates are on time and frame values.
+	 */
+	VisualObject.prototype.mouseMove = function( xTime, xFrame ) {
+
+	}
+
+	/**
+	 * Handle mouse down event
+	 * The coordinates are on time and frame values.
+	 */
+	VisualObject.prototype.mouseDown = function( xTime, xFrame ) {
+
+	}
+
+	/**
+	 * Handle mouse up event
+	 * The coordinates are on time and frame values.
+	 */
+	VisualObject.prototype.mouseUp = function( xTime, xFrame ) {
 
 	}
 
@@ -66,7 +107,65 @@
 	/**
 	 * Render context
 	 */
-	WordsObject.prototype.render = function( ctx, y, height ) {
+	WordsObject.prototype.render = function( ctx, x, y, height, scale ) {
+
+		// Start rendering elements
+		var l,w,focus;
+		var c=0, cTime=this.wrapped.beginTime();
+
+		// Draw background
+		ctx.fillStyle = this.timeline.palette.wordColors[c];
+		ctx.fillRect( x,y, parseInt(this.wrapped.duration)*scale ,height );
+
+		// Draw boxes
+		for (var i=0; i<this.wrapped.words.length; i++) {
+			var word = this.wrapped.words[i];
+
+			// Calculate left and width
+			if ( i+1 >= this.wrapped.words.length ) {
+				l = parseInt(word[0]);
+				w = parseInt(this.wrapped.duration) - l;
+			} else {
+				l = parseInt(word[0]);
+				w = parseInt(this.wrapped.words[i+1][0]) - l;
+			}
+
+			// Check if we should be focused
+			focus =  (this.timeline.playbackPos-cTime >= l) && (this.timeline.playbackPos-cTime <= l+w);
+
+			// Apply scale and offset
+			l = l*scale + x;
+			w = w*scale;
+
+			// Draw rect
+			if (focus) {
+				ctx.fillStyle = this.timeline.palette.focusedWordBack;
+			} else {
+				ctx.fillStyle = this.timeline.palette.wordColors[c];
+			}
+			ctx.fillRect( l,y,w,height );
+
+			// Draw font
+			ctx.textAlign = "start"; 
+			ctx.textBaseline = "middle";
+			ctx.font = this.timeline.palette.wordFont;
+			if (focus) {
+				ctx.fillStyle = this.timeline.palette.focusedWordFront;
+			} else {
+				ctx.fillStyle = this.timeline.palette.wordFontColor;
+			}
+			ctx.fillText( word[1], l+2, y+height/2 );
+
+			// Pick next color for the word
+			if (++c >= this.timeline.palette.wordColors.length) c=0;
+
+		}
+
+		// Draw frame
+		ctx.strokeStyle = this.timeline.palette.wordBorder;
+		ctx.lineWidth = 1;
+		ctx.strokeRect( x,y,w+l-x,height );
+
 
 	}
 
@@ -74,10 +173,15 @@
 	 * The timeline canvas is the clock source and
 	 */
 	var TimelineCanvas = glob.TimelineCanvas = function( logic ) {
+
 		this.canvas = document.createElement('canvas');
-		this.context = this.canvas.getContext("2d");
 		this.logic = logic;
+		this.clock = this.logic.clock;
 		this.palette = TimelinePalette;
+
+		// Setup context
+		this.context = this.canvas.getContext("2d");
+		this.context.imageSmoothingEnabled = false;
 
 		// Local variables
 		this.cursorPos = 0.0;
@@ -96,12 +200,16 @@
 		this.dragAnchorY = 0;
 		this.dragOffsetY = 0;
 
+		// Scrollbar values
+		this.hoverScrollbar = false;
+		this.scrollScale = 1.0;
+
 		// Sub-areas sizes
-		this.sizeScrollbarBottom = 20;
+		this.sizeScrollbarBottom = 15;
 		this.sizeLabelsLeft = 50;
 
 		// Visual objects
-		this.objects = [ ];
+		this.visualObjects = [ ];
 		this.wordObjects = [ ];
 
 		// The frame size
@@ -109,6 +217,13 @@
 
 		// Setup default cursor
 		$(this.canvas).css('cursor', 'default');
+
+		// Register a tick
+		this.clock.onTick((function(){
+
+			this.redraw();
+
+		}).bind(this));
 
 		// When an object is added in the timeline logic, create the visual wrapper
 		$(this.logic).on('objectAdded', (function(e, object, index) {
@@ -121,18 +236,40 @@
 			} else {
 
 				// Otherwise use the classic renderer
-				this.objects.push( new VisualObject( object, this ) );
+				this.visualObjects.push( new VisualObject( object, this ) );
 
 			}
 
 		}).bind(this));
 
+		// When an object is changed, update the visual representation of it
+		$(this.logic).on('objectChanged', (function(e, object, index) {
+
+			if ( object instanceof TimelineWords ) {
+
+				// Words have a different renderer
+				//this.wordObjects.push( new WordsObject( object, this ) );
+
+			} else {
+
+				// Otherwise use the classic renderer
+				//this.visualObjects.push( new VisualObject( object, this ) );
+
+			}
+
+		}).bind(this));
+
+
+		// When a frame is changed, update the playback position
+		$(this.logic).on('frameChanged', (function(e, frame, oldFrame, time) {
+
+			// Calculate the playback position
+			this.playbackPos = frame * this.logic.frameWidth;
+
+		}).bind(this));
+
 		// Move cursor with mouse
 		$(this.canvas).mousemove( (function(e) {
-
-			// Calculate the position in pixels of the mouse cursor
-			var xPos = e.offsetX + this.scrollX,
-				yPos = e.offsetY + this.scrollY;
 
 			// Check if we are in the middle of an operation
 			if (this.dragging) {
@@ -140,13 +277,17 @@
 				if (this.dragMode == 1) {
 					this.scrollX = this.dragOffsetX + (e.offsetX - this.dragAnchorX);
 				} else if (this.dragMode == 2) {
-					this.scrollX = this.dragOffsetX - (e.offsetX - this.dragAnchorX) ;
+					this.scrollX = this.dragOffsetX - (e.offsetX - this.dragAnchorX) * this.scrollScale;
 				}
 
 				// Wrap scroll
 				this.wrapScroll();
 
 			} else {
+
+				// Calculate the position in pixels of the mouse cursor
+				var xPos = e.offsetX - this.scrollX,
+					yPos = e.offsetY - this.scrollY;
 
 				// Use clipping regions
 				if (yPos < this.height - this.sizeScrollbarBottom) {
@@ -158,8 +299,13 @@
 					// Fire event
 					$(this).trigger('timeHover', this.cursorPos);
 
+					// Update flags
+					this.hoverScrollbar = false;
+
 				} else {
-					// Mouse in scrollbar
+
+					// Update flags
+					this.hoverScrollbar = true;
 
 				}
 
@@ -169,6 +315,16 @@
 			this.redraw();
 
 		}).bind(this) );
+
+		// Reset states when mouse is out
+		$(this.canvas).mouseout( (function(e) {
+
+			this.hoverScrollbar = false;
+			this.cursorPos = -1;
+
+			this.redraw();
+
+		}).bind(this));
 
 		// Move cursor with mouse
 		$(this.canvas).mousedown( (function(e) {
@@ -193,6 +349,10 @@
 				this.dragMode = 2;
 				this.dragAnchorX = e.offsetX;
 				this.dragOffsetX = this.scrollX;
+
+			} else if (e.button == 0) {
+
+				this.clock.set( this.cursorPos );
 
 			}
 
@@ -268,23 +428,37 @@
 		if (framesWidth < this.width) {
 			this.scrollX = 0;
 		} else {
-			var frameW = framesWidth - this.width + 8;
+			var frameW = framesWidth - this.width;
 			if (this.scrollX < -frameW) this.scrollX = -frameW;
 		}
 	}
 
 	/**
-	 * Draw the speech words
+	 * Draw the playback bar
 	 */
-	TimelineCanvas.prototype.drawWords = function( ctx ) {
+	TimelineCanvas.prototype.drawPlayback = function( ctx ) {
+		var playbackPos = this.playbackPos * this.scale + this.scrollX;
+		if (playbackPos < 0) return;
+
+		// Fill playback line
+		ctx.fillStyle = this.palette.playbackBack;
+		ctx.fillRect(0,0, Math.min( playbackPos, this.width ) ,this.height - this.sizeScrollbarBottom);
+
+		// Draw playback line
+		ctx.strokeStyle = this.palette.playbackLine;
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo( playbackPos, 0 );
+		ctx.lineTo( playbackPos, this.height - this.sizeScrollbarBottom );
+		ctx.stroke();
 
 	}
 
 	/**
-	 * Draw the speech words
+	 * Draw the timeline objects
 	 */
-	TimelineCanvas.prototype.drawFrames = function( ctx ) {
-		var y = 5,
+	TimelineCanvas.prototype.drawObjects = function( ctx ) {
+		var y = 15,
 			heightWords = 24,
 			heightObjects = 12,
 			padding = 2;
@@ -292,15 +466,17 @@
 		// Render words
 		for (var i=0; i<this.wordObjects.length; i++) {
 			if (this.wordObjects[i].isVisible()) {
-				this.wordObjects[i].render( ctx, y, heightWords );
+				var x = this.wordObjects[i].wrapped.beginTime() / this.scale + this.scrollX;
+				this.wordObjects[i].render( ctx, x, y, heightWords, this.scale );
 				y += heightWords + padding;
 			}
 		}
 
 		// Render objects
-		for (var i=0; i<this.objects.length; i++) {
-			if (this.objects[i].isVisible()) {
-				this.objects[i].render( ctx, y, heightObjects );
+		for (var i=0; i<this.visualObjects.length; i++) {
+			if (this.visualObjects[i].isVisible()) {
+				var x = this.visualObjects[i].wrapped.beginTime() / this.scale + this.scrollX;
+				this.visualObjects[i].render( ctx, x, y, heightObjects, this.scale );
 				y += heightObjects + padding;
 			}
 		}
@@ -310,16 +486,29 @@
 	 * Draw the background grid
 	 */
 	TimelineCanvas.prototype.drawGrid = function( ctx ) {
-		var firstFrameOffset = (this.scrollX % this.logic.frameWidth) * this.scale;
+		var firstFrameOffset = this.scrollX % (this.logic.frameWidth * this.scale);
 
 		// Draw the frames
 		ctx.beginPath();
 		ctx.strokeStyle = this.palette.gridLine;
 		ctx.lineWidth = 1;
 
+		// Draw gridlines
+		var fNum = this.logic.frameOf(-this.scrollX);
 		for (var x=firstFrameOffset; x<this.width; x+=this.logic.frameWidth * this.scale) {
 			ctx.moveTo( parseInt(x)+0.5, 0 );
 			ctx.lineTo( parseInt(x)+0.5, this.height-this.sizeScrollbarBottom );
+
+			// If we are in reasonable scale, draw frame number
+			if (this.scale > 0.35) {
+				ctx.textAlign = "center"; 
+				ctx.textBaseline = "top";
+				ctx.font = this.palette.gridLabelFont;
+				ctx.fillStyle = this.palette.gridLabelColor;
+				ctx.fillText( fNum, x+this.logic.frameWidth * this.scale/2, 2 );
+				fNum++;
+			}
+
 		}
 
 		ctx.stroke();
@@ -330,8 +519,8 @@
 	 * Draw the cursor
 	 */
 	TimelineCanvas.prototype.drawCursor = function( ctx ) {
-		var x = this.cursorPos * this.scale;
-		if ((x < this.scrollX) || (x > this.scrollX+this.width)) return;
+		var x = this.cursorPos * this.scale + this.scrollX;
+		if ((x < 0) || (x > this.width)) return;
 
 		ctx.beginPath();
 		ctx.strokeStyle = this.palette.cursorLine;
@@ -346,32 +535,62 @@
 	 * Draw scroll bars
 	 */
 	TimelineCanvas.prototype.drawScrollBar = function( ctx ) {
-		var paddingOuter = 4, paddingInner = 2;
+		var paddingOuter = 8, paddingInner = 2;
 		var framesWidth = this.logic.frameCount * this.logic.frameWidth * this.scale,
-			viewWidth = this.width - paddingOuter*2,
+			viewWidth = this.width - paddingOuter*2 - paddingInner*2,
 			viewOffset = -this.scrollX;
 
 		// If we are too wide, use the total width as the reference scale
 		if (framesWidth > viewWidth ) {
 			var scale = framesWidth / viewWidth;
+			this.scrollScale = scale;
+			framesWidth = viewWidth;
 			viewWidth /= scale;
 			viewOffset /= scale;
 		} else {
-			viewWidth = framesWidth - paddingInner*2;
+			viewWidth = framesWidth;
+			this.scrollScale = 1.0;
 		}
-		
-		// Draw the two shapes
-		ctx.fillStyle = this.palette.scrollOuter;
-		ctx.fillRect( paddingOuter + paddingInner + viewOffset,  
-					  this.height - this.sizeScrollbarBottom + paddingOuter,
-			          viewWidth, 
-					  this.sizeScrollbarBottom - paddingOuter*2 );
 
-		ctx.fillStyle = this.palette.scrollInner;
-		ctx.fillRect( paddingOuter,
-					  this.height - this.sizeScrollbarBottom + paddingOuter + paddingInner,
-					  framesWidth, 
-					  this.sizeScrollbarBottom - paddingOuter*2 - paddingInner*2 );
+		// Draw scrollbar separator
+		ctx.strokeStyle = this.palette.gridLineStrong;
+		ctx.lineWidth = 1;
+		ctx.beginPath();
+		ctx.moveTo(0,this.height - this.sizeScrollbarBottom);
+		ctx.lineTo(this.width,this.height - this.sizeScrollbarBottom);
+		ctx.stroke();
+
+		// Incorporate margins and prepare coordinates
+		var y = this.height - this.sizeScrollbarBottom/2,
+			x1 = paddingOuter, x2 = x1 + framesWidth+paddingInner*2;
+			x3 = x1 + paddingInner + viewOffset, x4 = x3 + viewWidth;
+
+		if (this.hoverScrollbar) {
+
+			ctx.beginPath();
+			ctx.lineWidth = 8;
+			ctx.strokeStyle = this.palette.scrollOuter;
+			ctx.lineCap = "round";
+			ctx.moveTo( x1, y); ctx.lineTo( x2, y );
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = this.palette.scrollInner;
+			ctx.lineCap = "butt";
+			ctx.moveTo( x3, y); ctx.lineTo( x4, y );
+			ctx.stroke();
+
+		} else {
+
+			ctx.beginPath();
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = this.palette.scrollUnfocused;
+			ctx.lineCap = "round";
+			ctx.moveTo( x3, y); ctx.lineTo( x4, y );
+			ctx.stroke();
+
+		}
 
 	}
 
@@ -387,10 +606,11 @@
 			this.context.fillRect(0, 0, this.width, this.height);
 
 			// Draw elements
+			this.drawPlayback( this.context );
 			this.drawGrid( this.context );
 			this.drawCursor( this.context );
 			this.drawScrollBar( this.context );
-
+			this.drawObjects( this.context );
 
 		}).bind(this));
 	}
