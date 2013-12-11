@@ -20,10 +20,18 @@
 
 		// Setup timeline visualizer
 		this.timeline = new TimelineCanvas( this.timelineLogic );
-		$(this.container).append( this.timeline.canvas );
 
 		// Setup timeline controls
 		this.timelineControls = new TimelineControls( this.timelineLogic );
+
+		// Crate scene canvas
+		this.sceneCanvas = new SceneCanvas( this.timelineLogic );
+
+		// Nest visual components
+		var sceneHost = $('<p class="text-center">');
+		$(sceneHost).append( this.sceneCanvas.canvas );
+		$(this.container).append( sceneHost );
+		$(this.container).append( this.timeline.canvas );
 		$(this.container).append( this.timelineControls.element );
 
 		// Set the proper dimentions
@@ -42,7 +50,8 @@
 
 		// Resize timeline canvas
 		console.log(width, height)
-		this.timeline.resize( width, height );
+		this.timeline.resize( width, 200 );
+		this.sceneCanvas.resize( 800, 400 );
 
 	}
 

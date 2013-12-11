@@ -41,6 +41,9 @@
 		this.clock = this.logic.clock;
 		this.palette = TimelinePalette;
 
+		// Tunable variables
+		this.autoScroll = true;
+
 		// Setup context
 		this.context = this.canvas.getContext("2d");
 		this.context.imageSmoothingEnabled = false;
@@ -81,8 +84,9 @@
 		$(this.canvas).css('cursor', 'default');
 
 		// Register a tick
-		this.clock.onTick((function(){
+		this.clock.onTick((function(time, delta){
 
+			// Redraw the UI
 			this.redraw();
 
 		}).bind(this));
@@ -127,6 +131,16 @@
 
 			// Calculate the playback position
 			this.playbackPos = frame * this.logic.frameWidth;
+
+			// If we have autoScroll, follow the view
+			if (this.autoScroll) {
+				var padSize = 50,
+					playbackLeft = this.playbackPos * this.scale;
+				if (playbackLeft + this.scrollX > this.width-padSize) {
+					this.scrollX = (this.width-padSize) - playbackLeft;
+				}
+
+			}
 
 		}).bind(this));
 

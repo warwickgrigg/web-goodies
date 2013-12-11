@@ -35,21 +35,18 @@
 	 */
 	TimelineWords.prototype.onUpdate = function( timeline, delta, frame, time ) {
 		var expectedTime = delta / 1000;
-
 		try {
-
 			// Sync audio if it drifts too far
 			if (Math.abs(this.audio.currentTime - expectedTime) > 0.1 ) {
 				this.audio.currentTime = expectedTime;
 			}
-
 		} catch (e) {
+			console.warn("TimelineWords Error:", e);
 		}
 
 	}
 
 	TimelineWords.prototype.onEnter = function( timeline ) {
-		console.log("+Enter");
 		// Start audio
 		this.entered = true;
 		try {
@@ -58,31 +55,38 @@
 				this.audio.play();
 			}
 		} catch (e) {
+			console.warn("TimelineWords Error:", e);
 		}
 
 	}
 	TimelineWords.prototype.onExit = function( timeline ) {
-		console.log("+Exit");
 		// Pause audio
 		this.entered = false;
 		try {
 			this.audio.pause();
 		} catch (e) {
+			console.warn("TimelineWords Error:", e);
 		}
 	}
 
 	TimelineWords.prototype.onPlaying = function( timeline ) {
-		console.log("+Playing");
 		this.playing = true;
-		if (this.entered) {
-			this.audio.play();
+		try {
+			if (this.entered) {
+				this.audio.play();
+			}
+		} catch (e) {
+			console.warn("TimelineWords Error:", e);
 		}
 	}
 
 	TimelineWords.prototype.onPaused = function( timeline ) {
-		console.log("+Paused");
-		this.playing = false;
-		this.audio.pause();
+		try {
+			this.playing = false;
+			this.audio.pause();
+		} catch (e) {
+			console.warn("TimelineWords Error:", e);
+		}
 	}
 
 
