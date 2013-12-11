@@ -9,7 +9,8 @@
 
 		ctlBoxColor		: '#999999',
 		ctlHandlerMove	: '#99CCFF',
-		ctlHandleRotate	: '#00CC66'
+		ctlHandleRotate	: '#00CC66',
+		ctlActiveHandle	: '#FF6666'
 
 	};
 
@@ -46,6 +47,7 @@
 		this.dragMouseX = 0;
 		this.dragMouseY = 0;
 		this.dragRef = null;
+		this.dragRotPoint = [0, 0];
 
 		// Set initial size
 		this.resize( 800, 400 );
@@ -73,54 +75,74 @@
 				focusObject = this.objectFromPoint( e.offsetX, e.offsetY );
 			console.log(ctrlPoint);
 
-			// Defocus object only if we are not hitting any control point
-			if ((focusObject == null) && (this.controlObject != null) && (ctrlPoint != 0)) {
-				// Keep it
-			} else {
-				this.controlObject = focusObject;
-			}
+			// Prevent default
+			e.preventDefault();
 
-			// Handle clicks on object and other positions
-			if ((this.controlObject != null) && (e.button == 0)) {
+			// [L] Button Click
+			if (e.button == 0)  {
 
-				// Update control point from movement
-				if (ctrlPoint != 0) {
-					// [1] Check for hitting a control point
-
-					// Setup dragger
-					this.dragging = true;
-					this.dragMode = ctrlPoint;
-					this.dragMouseX = e.offsetX;
-					this.dragMouseY = e.offsetY;
-
-					// Keep the reference information
-					this.dragRef = {
-						w: this.controlObject.width,
-						h: this.controlObject.height,
-						x: this.controlObject.variables.x,
-						y: this.controlObject.variables.y,
-						sx: this.controlObject.variables.scalex,
-						sy: this.controlObject.variables.scaley
-					}
-
+				// Defocus object only if we are not hitting any control point
+				if ((this.controlObject != null) && (ctrlPoint != 0)) {
+					// Keep it
 				} else {
-					// [2] Start moving object
+					this.controlObject = focusObject;
+				}
 
-					// Setup dragger
-					this.dragging = true;
-					this.dragMode = 0;
-					this.dragMouseX = e.offsetX;
-					this.dragMouseY = e.offsetY;
+				// Handle clicks on object and other positions
+				if (this.controlObject != null) {
 
-					// Keep reference the old position
-					this.dragRef = {
-						x: this.controlObject.variables.x,
-						y: this.controlObject.variables.y,
+					// Update control point from movement
+					if (ctrlPoint != 0) {
+						// [1] Check for hitting a control point
+
+						// Setup dragger
+						this.dragging = true;
+						this.dragMode = ctrlPoint;
+						this.dragMouseX = e.offsetX;
+						this.dragMouseY = e.offsetY;
+
+						// Keep the reference information
+						this.dragRef = {
+							w: this.controlObject.width,
+							h: this.controlObject.height,
+							x: this.controlObject.variables.x,
+							y: this.controlObject.variables.y,
+							sx: this.controlObject.variables.scalex,
+							sy: this.controlObject.variables.scaley
+						}
+
+						// If we are dragging the rotation point,
+						// update the dragRotPoint
+						if (ctrlPoint == 5) {
+							this.dragRotPoint = [ e.offsetX, e.offsetY ];
+						}
+
+					} else {
+						// [2] Start moving object
+
+						// Setup dragger
+						this.dragging = true;
+						this.dragMode = 0;
+						this.dragMouseX = e.offsetX;
+						this.dragMouseY = e.offsetY;
+
+						// Keep reference the old position
+						this.dragRef = {
+							x: this.controlObject.variables.x,
+							y: this.controlObject.variables.y,
+						}
+
+						$(this.canvas).css('cursor', 'move');
+
 					}
-
-					$(this.canvas).css('cursor', 'move');
 
 				}
+
+
+			// [R] Button Click
+			} else if (e.button == 2) {
+
+				// Dropdown menu
 
 			}
 
@@ -130,6 +152,9 @@
 
 		// Bind mouse move event
 		$(this.canvas).mousemove((function(e) {
+
+			// Prevent default
+			e.preventDefault();
 
 			if (this.dragging) {
 
@@ -172,6 +197,14 @@
 
 					}
 
+				} else if (this.dragMode == 5) {
+
+					// Calculate the rotation angle
+					var angle = Math.atan2( this.dragRef.y - e.offsetY , this.dragRef.x - e.offsetX );
+					this.controlObject.variables.rotation = angle*180/Math.PI + 180;
+
+					// Update the position of the visual object
+					this.dragRotPoint = [ e.offsetX, e.offsetY ];
 
 				}
 
@@ -193,6 +226,9 @@
 
 		// Bind mouse up event
 		$(this.canvas).mouseup((function(e) {
+
+			// Prevent default
+			e.preventDefault();
 
 			// Stop dragging
 			this.dragging = false;
@@ -316,42 +352,56 @@
 		if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
 
 		// Draw the 8 control points
-		var drawBox = (function(x,y){
+		var drawBox = (function(x,y,active){
 		    ctx.beginPath();
 		    ctx.lineWidth = 1;
 		    ctx.rect( x - PaletteConfig.handlerSize/2, 
 		    		  y - PaletteConfig.handlerSize/2, 
 		    		  PaletteConfig.handlerSize, 
 		    		  PaletteConfig.handlerSize );
-			ctx.fillStyle = this.palette.ctlHandlerMove;
+		    if (active) {
+		    	ctx.fillStyle = this.palette.ctlActiveHandle;
+		    } else {
+				ctx.fillStyle = this.palette.ctlHandlerMove;
+		    }
 			ctx.fill();
 		    ctx.strokeStyle = this.palette.controlBoxColor;
 		    ctx.stroke();
 		}).bind(this);
 
-		var drawCircle = (function(x,y){
+		var drawCircle = (function(x,y,active){
 		    ctx.beginPath();
 		    ctx.lineWidth = 1;
 		    ctx.arc(x, y, PaletteConfig.handlerSize/2, 0, 2 * Math.PI, false);
-			ctx.fillStyle = this.palette.ctlHandleRotate;
+		    if (active) {
+		    	ctx.fillStyle = this.palette.ctlActiveHandle;
+		    } else {
+				ctx.fillStyle = this.palette.ctlHandleRotate;
+		    }
 			ctx.fill();
 		    ctx.strokeStyle = this.palette.controlBoxColor;
 		    ctx.stroke();
 		}).bind(this);
 
-		// Draw bounding box
-		drawBox( bbox.left, bbox.top );
-		drawBox( bbox.right, bbox.top );
-		drawBox( bbox.left, bbox.bottom );
-		drawBox( bbox.right, bbox.bottom );
+		// Draw bounding box (with the active handler in a different color)
+		drawBox( bbox.left, bbox.top, (this.dragging && (this.dragMode == 1)) );
+		drawBox( bbox.right, bbox.top, (this.dragging && (this.dragMode == 2)) );
+		drawBox( bbox.left, bbox.bottom, (this.dragging && (this.dragMode == 3)) );
+		drawBox( bbox.right, bbox.bottom, (this.dragging && (this.dragMode == 4)) );
 
 		// Calculate the position of the rotation bar
 		var dist = Math.sqrt(
 				Math.pow( bbox.width/2, 2 ) +
 				Math.pow( bbox.height/2, 2 )
 			),
-			rotX = Math.sin( bbox.rotation ) * dist + (bbox.left + bbox.width/2),
-			rotY = Math.cos( bbox.rotation ) * dist + (bbox.top + bbox.height/2);
+			rotX = Math.cos( bbox.rotation ) * dist + (bbox.left + bbox.width/2),
+			rotY = Math.sin( bbox.rotation ) * dist + (bbox.top + bbox.height/2);
+
+		// If we are dragging, get the position of the rotating point
+		if (this.dragging && (this.dragMode == 5)) {
+			rotX = this.dragRotPoint[0];
+			rotY = this.dragRotPoint[1];
+		}
 
 		// Draw the line to the drag handler
 		ctx.beginPath();
@@ -368,7 +418,7 @@
 		if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
 
 		// Render and store the position of the rotation point
-		drawCircle(rotX, rotY);
+		drawCircle(rotX, rotY, (this.dragging && (this.dragMode == 5)));
 		this.controlRotPoint = [rotX, rotY];
 
 	}
