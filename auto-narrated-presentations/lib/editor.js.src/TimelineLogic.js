@@ -93,7 +93,7 @@
 				var o = this.timelineFrames[this.currentFrame][i];
 				if (this.timelineFrames[nextFrame].indexOf(o) == -1) {
 					// Object deleted
-					this.timelineObjects[o].onExit( this );
+					this.timelineObjects[o].onExit();
 					$(this).trigger('objectHidden', this.timelineObjects[o], o );
 				}
 			}
@@ -103,7 +103,7 @@
 				var o = this.timelineFrames[nextFrame][i];
 				if (this.timelineFrames[this.currentFrame].indexOf(o) == -1) {
 					// Object added
-					this.timelineObjects[o].onEnter( this );
+					this.timelineObjects[o].onEnter();
 					$(this).trigger('objectShown', this.timelineObjects[o], o );
 				}
 			}
@@ -119,7 +119,6 @@
 
 			// Update timeline object values in order to match the new values
 			this.timelineObjects[o].onUpdate( 
-				this,
 				time - this.timelineObjects[o].beginTime(), 
 				nextFrame, time 
 			);
@@ -224,6 +223,7 @@
 		// Store object on timeline
 		var objectIndex = this.timelineObjects.length;
 		this.timelineObjects.push(object);
+		object.setTimeline( this );
 
 		// Editable objects need to provide a way of reporting back to the timeline.
 		// If they have the updateTimeline placeholder, the timeline is going to
@@ -235,7 +235,7 @@
 		}
 
 		// Let the object know that it was placed
-		object.onPlace( this );
+		object.onPlace();
 
 		// Rebuild index
 		this.rebuildIndex();
@@ -244,7 +244,7 @@
 		var fBegin = this.frameOf( object.beginTime() ),
 			fEnd = this.frameOf( object.endTime() );
 		if ((this.currentFrame >= fBegin) && (this.currentFrame <= fEnd)) {
-			object.onEnter( this );
+			object.onEnter();
 			$(this).trigger('objectShown', object, objectIndex );
 		}
 
@@ -253,9 +253,9 @@
 
 		// If the clock is already running, let the object know
 		if (this.clock.running) {
-			object.onPlaying( this );
+			object.onPlaying();
 		} else {
-			object.onPaused( this );
+			object.onPaused();
 		}
 
 	}

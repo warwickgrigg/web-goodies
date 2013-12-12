@@ -9,11 +9,14 @@
 
 		this.filters = [ ];
 
+		this.template = {
+			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true, opacity: 1.0
+		}
 		this.variables = {
-			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true
+			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true, opacity: 1.0
 		};
 		this.renderVariables = {
-			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true
+			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true, opacity: 1.0
 		}
 
 	}
@@ -22,7 +25,7 @@
 	 * Update the filters
 	 */
 	SceneObject.prototype.updateVariables = function( time ) {
-		var vars=['x','y','scalex','scaley','rotation','visible'];
+		var vars=['x','y','scalex','scaley','rotation','visible','opacity'];
 		for (var i=0; i<vars.length; i++) {
 			this.renderVariables[vars[i]] = this.variables[vars[i]];
 		}

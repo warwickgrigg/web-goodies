@@ -4,9 +4,19 @@
 	 * TimelineObjects can be placed on timeline and they are used
 	 * for synchronizing arbitrary elements.
 	 */
-	var TimelineObject = glob.TimelineObject = function() {
+	var TimelineObject = glob.TimelineObject = function( ) {
 		this.begin = 0;
 		this.end = 0;
+		this.timeline = null;
+	}
+
+	/**
+	 * Set the timeline object
+	 * This function is called the instant the user calls the .add() function on 
+	 * the timeline.
+	 */
+	TimelineObject.prototype.setTimeline = function( timeline ) {
+		this.timeline = timeline;
 	}
 
 	/**
@@ -34,16 +44,16 @@
 	/**
 	 * Callback functions from the timeline logic
 	 */
-	TimelineObject.prototype.onUpdate = function( timeline, delta, frame, time ) { }	// Called on every tick
-	TimelineObject.prototype.onEnter = function( timeline ) { }		// Called when the cursor enters the time frame
-	TimelineObject.prototype.onExit = function( timeline ) { }		// Called when the cursor exits from the time frame
-	TimelineObject.prototype.onPlaying = function( timeline ) { }	// Called when the animation is started
-	TimelineObject.prototype.onPaused = function( timeline ) { }	// Called when the animation is ended
+	TimelineObject.prototype.onUpdate = function( delta, frame, time ) { }	// Called on every tick
+	TimelineObject.prototype.onEnter = function( ) { }		// Called when the cursor enters the time frame
+	TimelineObject.prototype.onExit = function( ) { }		// Called when the cursor exits from the time frame
+	TimelineObject.prototype.onPlaying = function( ) { }	// Called when the animation is started
+	TimelineObject.prototype.onPaused = function( ) { }	// Called when the animation is ended
 
 	/**
 	 * Editor callbacks
 	 */
-	TimelineObject.prototype.onPlace = function( timeline ) { }		// Called when the object was added by an editor
-	TimelineObject.prototype.onRemove = function( timeline ) { }	// Called when the object was removed by an editor
+	TimelineObject.prototype.onPlace = function( ) { }		// Called when the object was added by an editor
+	TimelineObject.prototype.onRemove = function( ) { }	// Called when the object was removed by an editor
 
 })(window);

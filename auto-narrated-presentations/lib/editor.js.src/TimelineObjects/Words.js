@@ -6,7 +6,6 @@
 	 */
 	var TimelineWords = glob.TimelineWords = function( data ) {
 		glob.TimelineObject.call( this );
-		console.log("- new TimelineWords(", data, ")");
 
 		// Store words
 		this.words = data['words'];
@@ -33,7 +32,7 @@
 	/**
 	 * Update a tween object
 	 */
-	TimelineWords.prototype.onUpdate = function( timeline, delta, frame, time ) {
+	TimelineWords.prototype.onUpdate = function( delta, frame, time ) {
 		var expectedTime = delta / 1000;
 		try {
 			// Sync audio if it drifts too far
@@ -46,7 +45,7 @@
 
 	}
 
-	TimelineWords.prototype.onEnter = function( timeline ) {
+	TimelineWords.prototype.onEnter = function() {
 		// Start audio
 		this.entered = true;
 		try {
@@ -59,7 +58,7 @@
 		}
 
 	}
-	TimelineWords.prototype.onExit = function( timeline ) {
+	TimelineWords.prototype.onExit = function() {
 		// Pause audio
 		this.entered = false;
 		try {
@@ -69,7 +68,7 @@
 		}
 	}
 
-	TimelineWords.prototype.onPlaying = function( timeline ) {
+	TimelineWords.prototype.onPlaying = function() {
 		this.playing = true;
 		try {
 			if (this.entered) {
@@ -80,7 +79,7 @@
 		}
 	}
 
-	TimelineWords.prototype.onPaused = function( timeline ) {
+	TimelineWords.prototype.onPaused = function() {
 		try {
 			this.playing = false;
 			this.audio.pause();

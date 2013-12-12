@@ -15,7 +15,7 @@
 	VisualKeyframes.prototype.render = function( ctx, x, y, height, scale ) {
 
 		// Calculate width
-		var w = (this.wrapped.endTime() - this.wrapped.beginTime()) * scale;
+		var w = (this.object.endTime() - this.object.beginTime()) * scale;
 
 		// Render
 		ctx.fillStyle = '#009933';

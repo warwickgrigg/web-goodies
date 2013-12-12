@@ -58,6 +58,7 @@
 		this.scrollY = 0;
 
 		// Dragging info
+		this.dragCursor = false;
 		this.dragging = false;
 		this.dragMode = 0;
 		this.dragAnchorX = 0;
@@ -167,6 +168,10 @@
 					// Update flags
 					this.hoverScrollbar = false;
 
+					// If we are dragging the cursor, update clock
+					if (this.dragCursor)
+						this.clock.set( this.cursorPos );
+
 				} else {
 
 					// Update flags
@@ -220,6 +225,7 @@
 			} else if (e.button == 0) {
 
 				this.clock.set( this.cursorPos );
+				this.dragCursor = true;
 
 			}
 
@@ -229,6 +235,8 @@
 		// (Capture events in window level so we can catch events
 		//  fired when the timeline is not focused)
 		$(window).mouseup( (function(e) {
+
+			this.dragCursor = false;
 
 			if (this.dragging) {
 				this.dragging = false;

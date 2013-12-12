@@ -16,23 +16,23 @@
 
 		// Start rendering elements
 		var l,w,focus;
-		var c=0, cTime=this.wrapped.beginTime();
+		var c=0, cTime=this.object.beginTime();
 
 		// Draw background
 		ctx.fillStyle = this.timeline.palette.wordColors[c];
-		ctx.fillRect( x,y, parseInt(this.wrapped.duration)*scale ,height );
+		ctx.fillRect( x,y, parseInt(this.object.duration)*scale ,height );
 
 		// Draw boxes
-		for (var i=0; i<this.wrapped.words.length; i++) {
-			var word = this.wrapped.words[i];
+		for (var i=0; i<this.object.words.length; i++) {
+			var word = this.object.words[i];
 
 			// Calculate left and width
-			if ( i+1 >= this.wrapped.words.length ) {
+			if ( i+1 >= this.object.words.length ) {
 				l = parseInt(word[0]);
-				w = parseInt(this.wrapped.duration) - l;
+				w = parseInt(this.object.duration) - l;
 			} else {
 				l = parseInt(word[0]);
-				w = parseInt(this.wrapped.words[i+1][0]) - l;
+				w = parseInt(this.object.words[i+1][0]) - l;
 			}
 
 			// Check if we should be focused
