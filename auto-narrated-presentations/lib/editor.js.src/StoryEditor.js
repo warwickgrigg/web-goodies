@@ -31,7 +31,7 @@
 		this.sceneControls = new SceneControls( this.sceneCanvas );
 
 		// Nest visual components
-		var sceneHost = $('<p class="text-center">');
+		var sceneHost = $('<p class="text-center story-back">');
 		$(this.container).append( this.sceneControls.element );
 		$(sceneHost).append( this.sceneCanvas.canvas );
 		$(this.container).append( sceneHost );
