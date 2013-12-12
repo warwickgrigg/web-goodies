@@ -3,16 +3,17 @@
 	/**
 	 * A Voice object encapsulates a sound object
 	 */
-	var VisualWords = glob.VisualWords = function( voiceObject, timeline ) {
+	var TimelineWordsVisual = glob.TimelineWordsVisual = function( voiceObject, timeline ) {
 		VisualObject.call( this, voiceObject, timeline );
 	}
 
-	VisualWords.prototype = Object.create( VisualObject.prototype );
+	TimelineWordsVisual.prototype = Object.create( VisualObject.prototype );
+	VisualObject.registerVisual( TimelineWords, TimelineWordsVisual );
 
 	/**
 	 * Render context
 	 */
-	VisualWords.prototype.render = function( ctx, x, y, height, scale ) {
+	TimelineWordsVisual.prototype.render = function( ctx, x, y, height, scale ) {
 
 		// Start rendering elements
 		var l,w,focus;

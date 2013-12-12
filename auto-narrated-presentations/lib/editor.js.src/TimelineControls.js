@@ -10,7 +10,7 @@
 		this.clock = this.timeline.clock;
 
 		// Prepare host element
-		this.element = $('<div id="timeline-controls"></div>');
+		this.element = $('<div class="timeline-controls"></div>');
 
 		// Prepare control elements
 		this.btnRewind = $('<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-fast-backward"></span></button>');

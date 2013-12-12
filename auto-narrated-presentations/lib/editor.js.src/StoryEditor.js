@@ -27,8 +27,12 @@
 		// Crate scene canvas
 		this.sceneCanvas = new SceneCanvas( this.timelineLogic );
 
+		// Crate scene canvas
+		this.sceneControls = new SceneControls( this.sceneCanvas );
+
 		// Nest visual components
 		var sceneHost = $('<p class="text-center">');
+		$(this.container).append( this.sceneControls.element );
 		$(sceneHost).append( this.sceneCanvas.canvas );
 		$(this.container).append( sceneHost );
 		$(this.container).append( this.timeline.canvas );

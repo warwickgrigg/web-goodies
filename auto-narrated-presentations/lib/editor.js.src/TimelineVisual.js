@@ -1,6 +1,11 @@
 (function(glob) {
 
 	/**
+	 * Static type registry used by the registerVisual and visualFor functions.
+	 */
+	var typeRegistry = [ ];
+
+	/**
 	 * Visual object that encapsulates timeline objects
 	 */
 	var VisualObject = glob.VisualObject = function( timelineObject, timeline ) {
@@ -9,6 +14,27 @@
 
 		this.beginFrame = this.timeline.logic.frameOf( this.object.beginTime() );
 		this.endFrame = this.timeline.logic.frameOf( this.object.endTime() );
+	}
+
+	/**
+	 * Static function that is used to register a translation
+	 * between the Timeline object and it's visual representation
+	 */
+	VisualObject.registerVisual = function( timelineClass, visualClass ) {
+		typeRegistry.push([timelineClass, visualClass]);
+	}
+
+	/**
+	 * Translate a timeline object to a visual object
+	 */
+	VisualObject.visualFor = function( object, timeline ) {
+		for (var i=0; i<typeRegistry.length; i++) {
+			// Check if class matches
+			if (object instanceof typeRegistry[i][0]) {
+				// Wrap into a visual object
+				return new typeRegistry[i][1]( object, timeline );
+			}
+		}
 	}
 
 	/**

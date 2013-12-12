@@ -27,7 +27,12 @@
 		wordBorder		: '#333333',
 
 		focusedWordBack	: '#FF9900',
-		focusedWordFront: '#FFFFFF'
+		focusedWordFront: '#FFFFFF',
+
+		framesBack		: '#BBBBBB',
+		framesBorder	: '#333333',
+		framesFront		: '#999999'
+
 
 	};
 
@@ -95,14 +100,14 @@
 		// When an object is added in the timeline logic, create the visual wrapper
 		$(this.logic).on('objectAdded', (function(e, object, index) {
 
-			if ( object instanceof TimelineWords ) {
-				// TimelineWords Renderer
-				this.wordObjects.push( new VisualWords( object, this ) );
+			// Get visual representation of the specified timeline object
+			var visualObject = VisualObject.visualFor( object, this );
 
-			} else if ( object instanceof KeyframeAnimation ) {
-				// KeyframeAnimation Renderer
-				this.visualObjects.push( new VisualKeyframes( object, this ) );
-
+			// Words visual go to a diferent array
+			if (visualObject instanceof TimelineWordsVisual) {
+				this.wordObjects.push( visualObject );
+			} else {
+				this.visualObjects.push( visualObject );
 			}
 
 		}).bind(this));
@@ -341,7 +346,7 @@
 		// Render words
 		for (var i=0; i<this.wordObjects.length; i++) {
 			if (this.wordObjects[i].isVisible()) {
-				var x = this.wordObjects[i].wrapped.beginTime() / this.scale + this.scrollX;
+				var x = this.wordObjects[i].object.beginTime() / this.scale + this.scrollX;
 				this.wordObjects[i].render( ctx, x, y, heightWords, this.scale );
 				y += heightWords + padding;
 			}
@@ -350,7 +355,7 @@
 		// Render objects
 		for (var i=0; i<this.visualObjects.length; i++) {
 			if (this.visualObjects[i].isVisible()) {
-				var x = this.visualObjects[i].wrapped.beginTime() / this.scale + this.scrollX;
+				var x = this.visualObjects[i].object.beginTime() / this.scale + this.scrollX;
 				this.visualObjects[i].render( ctx, x, y, heightObjects, this.scale );
 				y += heightObjects + padding;
 			}

@@ -3,16 +3,17 @@
 	/**
 	 * A Voice object encapsulates a sound object
 	 */
-	var VisualKeyframes = glob.VisualKeyframes = function( voiceObject, timeline ) {
+	var KeyframeAnimationVisual = glob.KeyframeAnimationVisual = function( voiceObject, timeline ) {
 		VisualObject.call( this, voiceObject, timeline );
 	}
 
-	VisualKeyframes.prototype = Object.create( VisualObject.prototype );
+	KeyframeAnimationVisual.prototype = Object.create( VisualObject.prototype );
+	VisualObject.registerVisual( KeyframeAnimation, KeyframeAnimationVisual );
 
 	/**
 	 * Render context
 	 */
-	VisualKeyframes.prototype.render = function( ctx, x, y, height, scale ) {
+	KeyframeAnimationVisual.prototype.render = function( ctx, x, y, height, scale ) {
 
 		// Calculate width
 		var w = (this.object.endTime() - this.object.beginTime()) * scale;

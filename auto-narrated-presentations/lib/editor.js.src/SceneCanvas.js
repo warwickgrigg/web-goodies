@@ -55,6 +55,9 @@
 		// Set initial size
 		this.resize( 800, 400 );
 
+		// Flags
+		this.editable = false;
+
 		// Prepare the clock callback function
 		var drawCallback = (function(time, delta){
 
@@ -84,6 +87,7 @@
 
 		// Bind mouse down event
 		$(this.canvas).mousedown((function(e) {
+			if (!this.editable) return;
 			var ctrlPoint = this.controlElementFromPoint( e.offsetX, e.offsetY ),
 				focusObject = this.objectFromPoint( e.offsetX, e.offsetY );
 
@@ -164,6 +168,12 @@
 
 		// Bind mouse move event
 		$(this.canvas).mousemove((function(e) {
+			if (!this.editable) return;
+
+			var snap = function( value, snapIsOn, step ) {
+				if (!snapIsOn) return value;
+				return Math.round( value / step ) * step;
+			}
 
 			// Prevent default
 			e.preventDefault();
@@ -178,30 +188,38 @@
 				if (this.dragMode == 0) {
 
 					// Calculate the new drag values
-					this.controlObject.variables.x = this.dragRef.x + diffX,
-					this.controlObject.variables.y = this.dragRef.y + diffY;
+					this.controlObject.variables.x = snap( this.dragRef.x + diffX, !e.ctrlKey, 10),
+					this.controlObject.variables.y = snap( this.dragRef.y + diffY, !e.ctrlKey, 10);
 
 				} else if (this.dragMode <= 4) {
 
+					// Calculate constrained proportions
+					var v = Math.sqrt( Math.pow( diffX, 2 ) + Math.pow( diffX, 2 ) ) * (diffX/Math.abs(diffX));
+					if (diffX == 0) v=0;
+
 					if (this.dragMode == 1) { // Top-left anchor -> x:-, y:-
+						if (!e.ctrlKey) { diffX = v; diffY = v; }
 						this.controlObject.variables.scalex = (-diffX / this.controlObject.width) + this.dragRef.sx;
 						this.controlObject.variables.scaley = (-diffY / this.controlObject.height) + this.dragRef.sy;
 						this.controlObject.variables.x = this.dragRef.x + diffX/2;
 						this.controlObject.variables.y = this.dragRef.y + diffY/2;
 
 					} else if (this.dragMode == 2) { // Top-Right anchor -> x:+, y:-
+						if (!e.ctrlKey) { diffX = v; diffY = -v; }
 						this.controlObject.variables.scalex = (diffX / this.controlObject.width) + this.dragRef.sx;
 						this.controlObject.variables.scaley = (-diffY / this.controlObject.height) + this.dragRef.sy;
 						this.controlObject.variables.x = this.dragRef.x + diffX/2;
 						this.controlObject.variables.y = this.dragRef.y + diffY/2;
 
 					} else if (this.dragMode == 3) { // Bottom-Right anchor -> x:+, y:-
+						if (!e.ctrlKey) { diffX = v; diffY = -v; }
 						this.controlObject.variables.scalex = (-diffX / this.controlObject.width) + this.dragRef.sx;
 						this.controlObject.variables.scaley = (diffY / this.controlObject.height) + this.dragRef.sy;
 						this.controlObject.variables.x = this.dragRef.x + diffX/2;
 						this.controlObject.variables.y = this.dragRef.y + diffY/2;
 
 					} else if (this.dragMode == 4) { // Bottom-Right anchor -> x:+, y:-
+						if (!e.ctrlKey) { diffX = v; diffY = v; }
 						this.controlObject.variables.scalex = (diffX / this.controlObject.width) + this.dragRef.sx;
 						this.controlObject.variables.scaley = (diffY / this.controlObject.height) + this.dragRef.sy;
 						this.controlObject.variables.x = this.dragRef.x + diffX/2;
@@ -213,7 +231,7 @@
 
 					// Calculate the rotation angle
 					var angle = Math.atan2( this.dragRef.y - e.offsetY , this.dragRef.x - e.offsetX );
-					this.controlObject.variables.rotation = angle*180/Math.PI + 180;
+					this.controlObject.variables.rotation = snap( angle*180/Math.PI + 180, !e.ctrlKey, 15 );
 
 					// Update the position of the visual object
 					this.dragRotPoint = [ e.offsetX, e.offsetY ];
@@ -238,6 +256,7 @@
 
 		// Bind mouse up event
 		$(this.canvas).mouseup((function(e) {
+			if (!this.editable) return;
 
 			// Prevent default
 			e.preventDefault();
@@ -349,6 +368,7 @@
 	 */
 	SceneCanvas.prototype.drawControlBox = function( ctx ) {
 		if (this.controlObject == null) return;
+		if (!this.editable) return;
 		var bbox = this.controlBBox = this.controlObject.getBoundingBox();
 
 		// Draw the bounding box rectangle

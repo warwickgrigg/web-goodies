@@ -26,6 +26,13 @@
 	KeyframeAnimation.prototype = Object.create( glob.TimelineObject.prototype );
 
 	/**
+	 * Static function to extract keyframe info from the given buffer
+	 */
+	KeyframeAnimation.fromBuffer = function() {
+
+	}
+
+	/**
 	 * Add a keyframe on the current position of the timeline
 	 */
 	KeyframeAnimation.prototype.addKeyframe = function() {
