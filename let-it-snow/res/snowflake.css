@@ -1,0 +1,50 @@
+
+/**
+ * A nice star-like animation
+ */
+@keyframes snowflake-ani {
+	0%	{ left: 0px; top: -50px; }
+	10%	{ left: -15.45px; top: -17px; }
+	20%	{ left: -50px; top: -11.8px; }
+	30%	{ left: -25px; top: 13.82px; }
+	40%	{ left: -30.9px; top: 50px; }
+	50%	{ left: 0px; top: 32.92px; }
+	60%	{ left: 30.9px; top: 50px; }
+	70%	{ left: 25px; top: 13.82px; }
+	80%	{ left: 50px; top: -11.8px; }
+	90%	{ left: 15.45px; top: -17.08px; }
+   100%	{ left: 0px; top: -50px; }
+}
+@-webkit-keyframes snowflake-ani {
+	0%	{ left: 0px; top: -50px; }
+	10%	{ left: -15.45px; top: -17px; }
+	20%	{ left: -50px; top: -11.8px; }
+	30%	{ left: -25px; top: 13.82px; }
+	40%	{ left: -30.9px; top: 50px; }
+	50%	{ left: 0px; top: 32.92px; }
+	60%	{ left: 30.9px; top: 50px; }
+	70%	{ left: 25px; top: 13.82px; }
+	80%	{ left: 50px; top: -11.8px; }
+	90%	{ left: 15.45px; top: -17.08px; }
+   100%	{ left: 0px; top: -50px; }
+}
+
+/**
+ * Add this class to any object and it will move
+ * in a nice star-like animation
+ */
+.snowflake {
+	font-size: 40px;
+	position: relative;
+	display: inline-block;
+	animation: snowflake-ani 20s linear infinite;
+	-webkit-animation: snowflake-ani 20s linear infinite;
+}
+
+/**
+ * And it will automatically stop when it's hovered
+ */
+.snowflake:hover {
+    animation-play-state: paused;
+    -webkit-animation-play-state: paused;
+}
