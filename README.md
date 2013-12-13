@@ -1,12 +1,12 @@
-web-goodies
+Web Goodies
 ===========
 
-Little CSS3/HTML5 experiments
+This repository contains various little CSS3/HTML5 experiments that I had to do for various of projects. 
 
-Check the descriptions in each one of the above directories for more information.
+Check the readme files in each one of them for more description.
 
-MIT License
-============
+License
+========
 
 All these little experiments are released under the MIT license, as follows:
 
