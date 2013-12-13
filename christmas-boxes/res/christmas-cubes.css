@@ -43,7 +43,7 @@
   -o-backface-visibility: hidden;
 }
 .cb-host a.cube .f {
-  background-image: url(img/presents.png);
+  background-image: url(img/present.png);
   background-position: 0px 0px;
   background-color: #999999;
 }
@@ -58,8 +58,8 @@
   -moz-transform: translateZ(50px);
   -ms-transform: translateZ(50px);
   -o-transform: translateZ(50px);
-  background-image: url(img/presents.png);
-  background-position: -200px 0px;
+  background-image: url(img/present-bow.png);
+  background-position: 0px 0px;
   background-color: #cccccc;
 }
 .cb-host a.cube:not(.compat) .f.fr {
@@ -99,8 +99,8 @@
   -moz-transform: rotateX(270deg) translateZ(50px);
   -ms-transform: rotateX(270deg) translateZ(50px);
   -o-transform: rotateX(270deg) translateZ(50px);
-  background-image: url(img/presents.png);
-  background-position: -400px 0px;
+  background-image: url(img/present.png);
+  background-position: 0px 0px;
 }
 .cb-host a.cube .b.bt {
   transform: rotateX(90deg) translateZ(-50px);
@@ -116,8 +116,8 @@
   -ms-transform: rotateY(90deg) translateZ(50px);
   -o-transform: rotateY(90deg) translateZ(50px);
   background-color: #808080;
-  background-image: url(img/presents.png);
-  background-position: -300px 0px;
+  background-image: url(img/present.png);
+  background-position: 0px 0px;
 }
 .cb-host a.cube .b.rt {
   transform: rotateY(270deg) translateZ(-50px);
@@ -134,8 +134,8 @@
   -ms-transform: rotateY(270deg) translateZ(50px);
   -o-transform: rotateY(270deg) translateZ(50px);
   background-color: #b3b3b3;
-  background-image: url(img/presents.png);
-  background-position: -100px 0px;
+  background-image: url(img/present.png);
+  background-position: 0px 0px;
 }
 .cb-host a.cube .b.lt {
   transform: rotateY(90deg) translateZ(-50px);
@@ -151,7 +151,7 @@
   font-family: 'Permanent Marker', cursive;
   font-size: 42px;
   margin-top: 25px;
-  color: #ff9933;
+  color: #ffffff;
 }
 .cb-host a.cube .message {
   padding: 5px;
