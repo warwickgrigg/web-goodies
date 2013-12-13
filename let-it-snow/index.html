@@ -3,10 +3,33 @@
 	<head>
 		<title>CSS3 Keyframe Animation Test</title>
 
-		<!-- Include CSS & Style -->
+		<!-- This is how you use the snowflakes -->
 		<link href="res/snowflake.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
 
-		<!-- Local page styling -->
+		/**
+		 * Randomly positioned elements
+		 */
+		.p1 { position: absolute; left: 10%; top: 10%; }
+		.p2 { position: absolute; left: 50%; top: 20%; }
+		.p3 { position: absolute; left: 50%; top: 60%; }
+		.p4 { position: absolute; left: 70%; top: 40%; }
+		.p5 { position: absolute; left: 40%; top: 70%; }
+
+		/**
+		 * Add a bit of randomness on every element
+		 */
+		.p2 .snowflake { animation-delay: -1s; -webkit-animation-delay: -1s; }
+		.p3 .snowflake { animation-delay: -2s; -webkit-animation-delay: -2s; }
+		.p4 .snowflake { animation-delay: -3s; -webkit-animation-delay: -3s; }
+		.p5 .snowflake { animation-delay: -4s; -webkit-animation-delay: -4s; }
+
+		</style>
+
+		<!-- =================================================== -->
+		<!-- This part here is for the visual design of the demo -->
+		<!-- =================================================== -->
+
 		<style type="text/css">
 
 		/**
@@ -39,25 +62,36 @@
 			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
 		}
-
 		/**
-		 * Randomly positioned elements
+		 * Description overlay
 		 */
-		.p1 { position: absolute; left: 10%; top: 10%; }
-		.p2 { position: absolute; left: 50%; top: 20%; }
-		.p3 { position: absolute; left: 50%; top: 60%; }
-		.p4 { position: absolute; left: 70%; top: 40%; }
-		.p5 { position: absolute; left: 40%; top: 70%; }
-
-		/**
-		 * Add a bit of randomness on every element
-		 */
-		.p2 .snowflake { animation-delay: -1s; -webkit-animation-delay: -1s; }
-		.p3 .snowflake { animation-delay: -2s; -webkit-animation-delay: -2s; }
-		.p4 .snowflake { animation-delay: -3s; -webkit-animation-delay: -3s; }
-		.p5 .snowflake { animation-delay: -4s; -webkit-animation-delay: -4s; }
+		.description {
+			position: absolute;
+			text-align: center;
+			bottom: 10%;
+			left: 0px;
+			right: 0px;
+		}
+		.description > div {
+			text-align: left;
+			padding: 20px;
+			border-radius: 40px;
+			background: rgba(0, 0, 0, 0.2);
+			font-family: Tahoma;
+			font-size: 14px;
+			margin: auto;
+			width: 70%;
+			color: #000;
+			text-shadow: 2px 2px 2px #fff;
+		}
+		.description > div > h1 {
+			text-decoration: italic;
+		}
 
 		</style>
+
+		<!-- =================================================== -->
+
 	</head>
 	<body>
 		<div class="background">
@@ -77,6 +111,15 @@
 			<div class="p3"><a href="#"><img class="snowflake" border="0" src="res/snowflake.png" /></a></div>
 			<div class="p4"><a href="#"><img class="snowflake" border="0" src="res/snowflake.png" /></a></div>
 			<div class="p5"><a href="#"><img class="snowflake" border="0" src="res/snowflake.png" /></a></div>
+
+			<!-- The description message -->
+			<div class="description">
+				<div>
+					<h1>Let it snow!</h1>
+					<p>This test demonstrates the use of <strong>CSS3 keyframe animation</strong> in order to give a snowflake feel to your website. Each snowflake is suspended when the mouse hovers it, therefore it can easily be used for navigation links.</p>
+					<p>To use it, just add the 'snowflake' class to your element.</p>
+				</div>
+			</div>
 
 		</div>
 

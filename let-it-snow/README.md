@@ -2,7 +2,6 @@
 Let it snow
 ============
 
-This is a web test that animates a link in a snowflake-like path. It can be used to add a bit more
-christmas feeling in your website.
+This test demonstrates the use of **CSS3 keyframe animation** in order to give a snowflake feel to your website. Each snowflake is suspended when the mouse hovers it, therefore it can easily be used for navigation links
 
-It uses the CSS3 path animations and it's as simple as adding the 'snowflake' class to your element.
+To use it, just add the 'snowflake' class to your element.
