@@ -369,3 +369,12 @@ footer a:hover {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {}
+
+/* Framed images */
+img.framed {
+  background: #fff;
+  padding: 5px;
+  border: solid 1px #999;
+  margin: 0px 10px 10px 0px;
+  float: left;
+}
