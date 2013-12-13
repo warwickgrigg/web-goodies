@@ -1,7 +1,12 @@
 <?php
 
+// Check if config.php is missing
+if (!file_exists("config/account.php")) {
+	die("Please prepare a config/account.php, according to config/account.php.template!");
+}
+
 // Import account info from the account.php
-$account = require("account.php");
+$account = require("config/account.php");
 $aLogin = $account['login'];
 $aApp = $account['app'];
 $aPassword = $account['password'];

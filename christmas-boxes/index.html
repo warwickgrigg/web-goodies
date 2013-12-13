@@ -34,11 +34,91 @@
 		};
 
 		</script>
+
+		<!-- =================================================== -->
+		<!-- This part here is for the visual design of the demo -->
+		<!-- =================================================== -->
+
+		<style type="text/css">
+
+		/**
+		 * Hidden overflows
+		 */
+		.body {
+			overflow: hidden;
+		}
+
+		/**
+		 * Background fill
+		 */
+		.background {
+
+			position: absolute;;
+			left: 0px;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+
+			overflow: hidden;
+
+			background: rgb(181,189,200); /* Old browsers */
+			background: -moz-radial-gradient(center, ellipse cover,  rgba(181,189,200,1) 0%, rgba(130,140,149,1) 36%, rgba(40,52,59,1) 100%); /* FF3.6+ */
+			background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(181,189,200,1)), color-stop(36%,rgba(130,140,149,1)), color-stop(100%,rgba(40,52,59,1))); /* Chrome,Safari4+ */
+			background: -webkit-radial-gradient(center, ellipse cover,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-radial-gradient(center, ellipse cover,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* Opera 12+ */
+			background: -ms-radial-gradient(center, ellipse cover,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* IE10+ */
+			background: radial-gradient(ellipse at center,  rgba(181,189,200,1) 0%,rgba(130,140,149,1) 36%,rgba(40,52,59,1) 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+		}
+		/**
+		 * Description overlay
+		 */
+		.description {
+			z-index: 1000000;
+			position: absolute;
+			text-align: center;
+			bottom: 10%;
+			left: 0px;
+			right: 0px;
+		}
+		.description > div {
+			text-align: left;
+			padding: 20px;
+			border-radius: 40px;
+			background: rgba(255, 255, 255, 0.2);
+			font-family: Tahoma;
+			font-size: 14px;
+			margin: auto;
+			width: 70%;
+			color: #000;
+			text-shadow: 1px 1px 2px #666;
+		}
+		.description > div > h1 {
+			text-decoration: italic;
+		}
+
+		</style>
+
+		<!-- =================================================== -->
+
 	</head>
 	<body>
 
+		<!-- Background -->
+		<div class="background"></div>
+
 		<!-- Spacer -->
 		<div style="height: 150px;"></div>
+
+		<!-- The description message -->
+		<div class="description">
+			<div>
+				<h1>Christmas Boxes</h1>
+				<p>This test demonstrates the use of CSS3 and 3D transitions in order to create any number of present-like boxes. Each box, when hovered, will pop a card from inside.</p>
+				<p>Each box is individually placed in the container using a javascript function.</p>
+			</div>
+		</div>
 
 	</body>
 </html>
