@@ -1,0 +1,363 @@
+//
+// The MIT License (MIT)
+//
+// Copyright (c) 2013 Charalampidis Ioannis
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+///////////////////////////////////////////
+// Configuration
+///////////////////////////////////////////
+
+// The perspective distortion distance
+@perspective: 1000px;
+
+// The width and height and length of the cube (pixels)
+@cubesize: 100px;
+
+// The width of the card
+@cardWidth: (@cubesize + 20px);
+
+// The padding around the card
+@cardPadding: 5px;
+
+// How much to elevate the card
+@cardElevation: 150px;
+
+// The base background color for the front faces
+@colorFrontFace: #999;
+
+// The base background color for the back faces
+@colorBackFace: #333;
+
+// The letters in front of the box
+@colorLetters: #F93;
+
+// The general image for all the front faces
+@imgSideFaces:  url(img/presents.png);
+@posSideFaces:  0px 0px;
+
+// The image from the front face (Where the number located)
+@imgFrontFace:  url(img/presents.png);
+@posFrontFace:  -(@cubesize*2) 0px;
+
+// The image from the bottom face
+@imgBottomFace:  url(img/presents.png);
+@posBottomFace:  -(@cubesize*4) 0px;
+
+// The image from the left face
+@imgLeftFace:  url(img/presents.png);
+@posLeftFace:  -@cubesize 0px;
+
+// The image from the left face
+@imgRightFace:  url(img/presents.png);
+@posRightFace:  -(@cubesize*3) 0px;
+
+// The offset from top of the numbers
+@lettersOffset: 25px;
+
+// The font size of the letters
+@lettersFontSize: 42px;
+
+// The image for the back faces (inside the box)
+@imgInnerFaces: url(img/inside.png);;
+//@posInnerFaces:  -(@cubesize*2) 0px;
+@posInnerFaces:  0px 0px;
+
+///////////////////////////////////////////
+// Fonts
+///////////////////////////////////////////
+
+// Import required fronts from Google Fonts
+@import url(http://fonts.googleapis.com/css?family=Permanent+Marker);
+@import url(http://fonts.googleapis.com/css?family=Engagement);
+
+// Fot family of the text on the message header
+@fontMessageHeader: 'Engagement', cursive;
+
+// Fot family of the text on the message body
+@fontMessageBody: 'Engagement', cursive;
+
+// Fot family of the text on the numbers in front of the box
+@fontNumbers: 'Permanent Marker', cursive;
+
+///////////////////////////////////////////
+// Mix-ins for cross-browser support
+///////////////////////////////////////////
+.perspective (@def) {
+	       perspective: @def;
+   -webkit-perspective: @def;
+      -moz-perspective: @def;
+       -ms-perspective: @def;
+	    -o-perspective: @def;
+}
+.transform-style (@def) {
+	       transform-style: @def;
+   -webkit-transform-style: @def;
+      -moz-transform-style: @def;
+       -ms-transform-style: @def;
+	    -o-transform-style: @def;
+}
+.transform (@def) {
+	       transform: @def;
+   -webkit-transform: @def;
+      -moz-transform: @def;
+       -ms-transform: @def;
+	    -o-transform: @def;
+}
+.transition (@def) {
+	       transition: @def;
+   -webkit-transition: @def;
+      -moz-transition: @def;
+       -ms-transition: @def;
+	    -o-transition: @def;
+}
+.backface-visibility (@def) {
+	       backface-visibility: @def;
+   -webkit-backface-visibility: @def;
+      -moz-backface-visibility: @def;
+       -ms-backface-visibility: @def;
+	    -o-backface-visibility: @def;
+}
+
+///////////////////////////////////////////
+// Christmas host
+///////////////////////////////////////////
+
+.cb-host {
+	position: relative;
+
+	// Fix font bug
+	-webkit-font-smoothing: antialiased;
+
+	// Set to a big value
+	.perspective( @perspective );
+
+	// Cube objet
+	a.cube {
+		width: @cubesize;
+		height: @cubesize;
+		position: absolute;
+		cursor: pointer;
+		color: #000;
+		text-decoration: none;
+		display: block;
+
+		.transform-style(preserve-3d);
+		.transition(all 1s ease-in-out);
+
+		// Figures inside cube 
+		figure {
+			left: 0;
+			top: 0;
+			width: @cubesize;
+			height: @cubesize;
+			display: block;
+			position: absolute;
+			overflow: hidden;
+
+			.backface-visibility(hidden);
+		}
+
+		// Front faces
+		.f {
+			background-image: @imgSideFaces;
+			background-position: @posSideFaces;
+			background-color: @colorFrontFace;
+		}
+
+		// Back faces
+		.b {
+			background-image: @imgInnerFaces;
+			background-position: @posInnerFaces;
+			background-color: @colorBackFace;
+		}
+
+		// Face definitions
+		.f.fr { 
+			.transform( translateZ( (@cubesize/2) ) );
+			background-image: @imgFrontFace;
+			background-position: @posFrontFace;
+			background-color: lighten(@colorFrontFace, 20%);
+		}
+		&:not(.compat) .f.fr {
+			.transform( translateZ( (@cubesize/2) ) );
+		}
+		.b.fr { 
+			.transform( rotateX(180deg) translateZ(-(@cubesize/2)) );
+			background-color: darken(@colorBackFace, 20%);
+		}
+
+		.f.bk { 
+			.transform( rotateY(180deg) translateZ((@cubesize/2)) );
+			background-color: darken(@colorFrontFace, 20%);
+		}
+		.b.bk { 
+			.transform( translateZ(-(@cubesize/2)) ); 
+			background-color: lighten(@colorBackFace, 20%);
+		}
+
+		.f.bt { 
+			.transform( rotateX(270deg) translateZ((@cubesize/2)) );
+			background-image: @imgBottomFace;
+			background-position: @posBottomFace;
+		}
+		.b.bt { 
+			.transform( rotateX(90deg) translateZ(-(@cubesize/2)) ); 
+		}
+
+		.f.rt { 
+			.transform( rotateY(90deg) translateZ((@cubesize/2)) ); 
+			background-color: darken(@colorFrontFace, 10%);
+			background-image: @imgRightFace;
+			background-position: @posRightFace;
+		}
+		.b.rt { 
+			.transform( rotateY(270deg) translateZ(-(@cubesize/2)) ); 
+			background-color: lighten(@colorBackFace, 10%);
+		}
+
+		.f.lt { 
+			.transform( rotateY(270deg) translateZ((@cubesize/2)) ); 
+			background-color: lighten(@colorFrontFace, 10%);
+			background-image: @imgLeftFace;
+			background-position: @posLeftFace;
+		}
+		.b.lt { 
+			.transform( rotateY(90deg) translateZ(-(@cubesize/2)) );
+			background-color: darken(@colorBackFace, 10%);
+		}
+
+		// Number on the front face
+		.f.fr .num {
+			font-weight: bold;
+			text-align: center;
+			font-family: @fontNumbers;
+
+			font-size: @lettersFontSize;
+			margin-top: @lettersOffset;
+			color: @colorLetters;
+		}
+
+		// Message note inside the cube
+		.message {
+			padding: @cardPadding;
+			background: #fff;
+			border: solid 1px #999;
+			width: (@cardWidth - @cardPadding*2);
+			height: (@cubesize - @cardPadding*2);
+		}
+		&:not(.compat) .message {
+			.transform( translateY(0px) rotateY(45deg) );
+			.transition( all 1s ease-in-out );
+			left: -((@cardWidth - @cardPadding*2 - @cubesize)/2);
+		}
+		.message h4 {
+			margin: 5px 0px;
+			padding: 0px;
+			font-family: @fontMessageHeader;
+		}
+		.message p {
+			margin: 0px;
+			padding: 0px;
+			font-family: @fontMessageBody;
+		}
+
+		// Hover transitions
+		&:not(.compat):hover { 
+			.transform( rotateX(-45deg) rotateY(-45deg) );
+		}
+		&:not(.compat):hover .message {
+			.transform( translateY(-(@cardElevation)) translateX(-20px) rotateY(45deg) rotateX(50deg) );
+		}
+
+		/////////////////////////////////////////////////
+		// Compatibility mode
+		// ==============================================
+		// In this mode the cards just flip on the 
+		// X axis, since no more advance transformations
+		// are supported
+		/////////////////////////////////////////////////
+
+		&.compat {
+
+			padding: 0px;
+			margin: 0px;
+
+			// Prepare animation box (to preserve the bounding box)
+			.ani {
+
+				width: @cubesize;
+				height: @cubesize;
+				position: absolute;
+
+
+				// Reset f-fr transformation
+				.f.fr { 
+
+					// Hide back-face
+					.backface-visibility(hidden);
+					
+					// Transformation			
+					.transform( perspective(@perspective) rotateY(0deg) );
+					.transition( all 1s ease-in-out );
+
+					// Explicit margins and position
+					margin: 0px;
+					left: 0px;
+					top: 0px;
+
+				}
+
+				.message {
+
+					// Hide back-face
+					.backface-visibility(hidden);
+
+					// Flip message card
+					.transform( perspective(@perspective) rotateY(-180deg) );
+					.transition( all 1s ease-in-out );
+
+					// Reset dimensions (-2 = border)
+					width: (@cubesize - 2);
+					height: (@cubesize - 2);
+
+					// Explicit margins and position
+					margin: 0px;
+					left: -@cardPadding;
+					top: -@cardPadding;
+
+				}
+
+			}
+
+			// Create individual hover transform
+			&:hover .ani .f.fr { 
+				.transform( perspective(@perspective) rotateY(180deg) );
+			}
+			&:hover .ani .message { 
+				.transform( perspective(@perspective) rotateY(0deg) );
+			}			
+
+		}
+
+
+	}
+
+}

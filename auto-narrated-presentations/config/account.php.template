@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Change this to reflect your acapella account
+ */
+return array(
+		'login' => "REPLACEME",
+		'app' => "REPLACEME",
+		'password' => "REPLACEME"
+	);
+
+?>

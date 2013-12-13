@@ -1,0 +1,60 @@
+
+div.peCore > div.peTimeline {
+	width: 100%;
+	height: 200px;
+	position: relative;
+	background: #eee;
+
+	position: absolute;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+div.peCore > div.peTimeline > div.wordframe {
+	position: absolute;
+	background: url(img/hatch.png);
+	border-top: solid 1px #999;
+	border-bottom: solid 1px #999;
+	margin: 0px;
+	padding: 0px;
+	top: 5px;
+	left: 0px;
+	height: 20px;
+}
+
+
+div.peCore > div.peTimeline > div.wordframe > span {
+	display: inline-block;
+	background: #fff;
+	padding: 2px;
+	margin: 0px;
+
+	font-family: Tahoma;
+	font-size: 10px;
+	overflow: hidden;
+	text-align: center;
+
+	height: 12px;
+}
+
+div.peCore > div.peTimeline > div.wordframe > span:nth-child(2n) {
+	background-color: #dedede;
+}
+
+div.peCore > div.peTimeline > div.cursor {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	border-left: solid 1px #999;
+	width: 1px;
+	pointer-events: none;
+}
+
+div.peCore > div.peTimeline > div.playframe {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	pointer-events: none;
+	background-color: #CF9;
+}

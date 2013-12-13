@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<!-- Meta info -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- External libraries from CDN -->
+		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+		<!-- Development sources -->
+		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
+		<script type="text/javascript" src="lib/editor.js.src/Clock.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineLogic.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineCanvas.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineControls.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/SceneCanvas.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/SceneControls.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/SceneObject.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/SceneObjects/ImageObject.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObject.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects/Words.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineObjects/KeyframeAnimation.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineVisual.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineVisuals/Words.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/TimelineVisuals/KeyframeAnimation.js"></script>
+		<script type="text/javascript" src="lib/editor.js.src/StoryEditor.js"></script>
+		<script type="text/javascript" src="lib/editor.js"></script>
+
+		<style type="text/css">
+		.autonarrate .scene-canvas {
+			border: solid 1px #555;
+		}
+		.autonarrate .canvas-controls {
+
+			padding: 5px;
+			margin-bottom: 5px;
+			border-radius: 5px;
+
+		}
+		.autonarrate .story-back {
+			background: #666;
+			padding: 10px;
+		}
+		</style>
+
+		<script type="text/javascript">
+
+		var editor;
+
+		var data = {"id":"360347647_d397f013c63e1","soundURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wav","wordURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wp.txt","duration":"8300.77","size":"366112","words":[["49","Hello"],["397","world."],["1553","This"],["1761","is"],["1874","a"],["1927","test"],["2561","to"],["2703","see"],["3017","how"],["3175","we"],["3281","can"],["3479","create"],["3871","a"],["3918","simple"],["4375","timeline"],["4943","based"],["5291","on"],["5462","vocal"],["5807","words."],["6933","Does"],["7117","it"],["7249","look"],["7442","good?"]],"res":"ok"};
+
+		var t3 = new TimelineWords( data );
+
+		var im1 = new Image();
+		im1.src = "http://icons.iconarchive.com/icons/gianni-polito/brush-adium/128/Adium-Away-icon.png";
+		var s1 = new ImageObject( im1 );
+		var t4 = new KeyframeAnimation( s1 );
+
+		var im2 = new Image();
+		im2.src = "http://icons.iconarchive.com/icons/gianni-polito/lava-lamp/128/lamp-pink-glitters-icon.png";
+		var s2 = new ImageObject( im2 );
+		var t5 = new KeyframeAnimation( s2 );
+
+		// Let the magic begin!
+		//clock.start();
+
+		$(function() {
+			editor = new StoryEditor("#editor");
+			//editor.timeline.logic.add(t1);
+			//editor.timeline.logic.add(t2);
+			editor.timelineLogic.add(t3);
+			editor.timelineLogic.add(t4);
+			editor.timelineLogic.add(t5);
+
+			editor.sceneCanvas.add( s1 );
+			editor.sceneCanvas.add( s2 );
+			
+		});
+
+		function submitText() {
+			editor.buildText(
+				$("#textField").val(),
+				$("#voice").val()
+			);
+		}
+		
+		function change() {
+			
+		}
+
+		</script>
+	</head>
+	<body>
+
+	    <div class="container">
+
+			<h1>Timeline editor</h1>
+
+	    	<!--
+			<fieldset>
+				<label>Create new timeline</label>
+				<p>Enter your text:</p>
+				<p>
+					<textarea id="textField" rows="5" cols="80">Hello world. This is a test to see how we can create a simple timeline based on vocal words. Does it look good?</textarea>
+					<br />
+					<select id="voice">
+						<option value="graham22k">UK - Graham</option>
+						<option value="harry22k">UK - Harry</option>
+						<option value="lucy22k">UK - Lucy</option>
+						<option value="nizareng22k">UK - Nizareng</option>
+						<option value="peter22k">UK - Peter</option>
+						<option value="peterhappy22k">UK - PeterHappy</option>
+						<option value="petersad22k">UK - PeterSad</option>
+						<option value="rachel22k">UK - Rachel</option>
+						<option value="ella22k">US - Ella</option>
+						<option value="heather22k" selected="selected">US - Heather</option>
+						<option value="josh22k">US - Josh</option>
+						<option value="will22k">US - Will</option>
+						<option value="willbadguy22k">US - WillBadGuy</option>
+						<option value="willfromafar22k">US - WillFromAfar</option>
+						<option value="willhappy22k">US - WillHappy</option>
+						<option value="willsad22k">US - WillSad</option>
+						<option value="tyler22k">Australia - Tyler</option>
+					</select>
+					<input type="button" value="Create Timeline" onclick="submitText()" />
+				</p>
+			</fieldset>
+			-->
+
+			<div class="well well-sm">
+				<div id="editor" class="autonarrate"></div>
+			</div>
+
+		</div>
+
+	</body>
+</html>
