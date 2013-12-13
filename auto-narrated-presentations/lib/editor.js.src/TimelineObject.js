@@ -34,6 +34,22 @@
 	}
 
 	/**
+	 * Return the first frame index
+	 */
+	TimelineObject.prototype.beginFrame = function() {
+		if (!this.timeline) return null;
+		return this.timeline.frameOf( this.beginTime() );
+	}
+
+	/**
+	 * Return the last frame index
+	 */
+	TimelineObject.prototype.endFrame = function() {
+		if (!this.timeline) return null;
+		return this.timeline.frameOf( this.endTime() );
+	}
+
+	/**
 	 * This function updates the visual representation of the object on the stage and on the timeline.
 	 * Placeholder function that will be replaced upon insertion on timeline logic.
 	 */

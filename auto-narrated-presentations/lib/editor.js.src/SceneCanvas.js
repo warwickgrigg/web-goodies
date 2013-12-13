@@ -56,7 +56,7 @@
 		this.resize( 800, 400 );
 
 		// Flags
-		this.editable = false;
+		this.editable = true;
 
 		// Prepare the clock callback function
 		var drawCallback = (function(time, delta){
@@ -194,7 +194,7 @@
 				} else if (this.dragMode <= 4) {
 
 					// Calculate constrained proportions
-					var v = Math.sqrt( Math.pow( diffX, 2 ) + Math.pow( diffX, 2 ) ) * (diffX/Math.abs(diffX));
+					var v = diffX;
 					if (diffX == 0) v=0;
 
 					if (this.dragMode == 1) { // Top-left anchor -> x:-, y:-
@@ -442,7 +442,7 @@
 			var dist = Math.sqrt(
 					Math.pow( bbox.width/2, 2 ) +
 					Math.pow( bbox.height/2, 2 )
-				),
+				) + PaletteConfig.handlerSize + 5,
 				rotX = Math.cos( bbox.rotation ) * dist + (bbox.left + bbox.width/2),
 				rotY = Math.sin( bbox.rotation ) * dist + (bbox.top + bbox.height/2);
 

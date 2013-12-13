@@ -89,6 +89,15 @@
 			this.keyframeIndex.push( Object.create(this.objectTemplate) );
 		}
 
+		// Update default keyframes
+		this.keyframes = [
+			{
+				'begin': this.beginFrame(),
+				'end': this.endFrame(),
+				'tween': 'linear'
+			}
+		];
+
 	}
 
 
