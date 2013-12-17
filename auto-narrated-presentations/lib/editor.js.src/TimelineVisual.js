@@ -8,9 +8,10 @@
 	/**
 	 * Visual object that encapsulates timeline objects
 	 */
-	var VisualObject = glob.VisualObject = function( timelineObject, timeline ) {
+	var TimelineVisualObject = glob.TimelineVisualObject = function( timelineObject, timeline ) {
 		this.timeline = timeline;
 		this.object = timelineObject;
+		this.dragging = false;
 
 		this.beginFrame = this.timeline.logic.frameOf( this.object.beginTime() );
 		this.endFrame = this.timeline.logic.frameOf( this.object.endTime() );
@@ -20,14 +21,14 @@
 	 * Static function that is used to register a translation
 	 * between the Timeline object and it's visual representation
 	 */
-	VisualObject.registerVisual = function( timelineClass, visualClass ) {
+	TimelineVisualObject.registerVisual = function( timelineClass, visualClass ) {
 		typeRegistry.push([timelineClass, visualClass]);
 	}
 
 	/**
 	 * Translate a timeline object to a visual object
 	 */
-	VisualObject.visualFor = function( object, timeline ) {
+	TimelineVisualObject.visualFor = function( object, timeline ) {
 		for (var i=0; i<typeRegistry.length; i++) {
 			// Check if class matches
 			if (object instanceof typeRegistry[i][0]) {
@@ -40,7 +41,7 @@
 	/**
 	 * Check if the object is within the visible region
 	 */
-	VisualObject.prototype.isVisible = function() {
+	TimelineVisualObject.prototype.isVisible = function() {
 
 		// The object boundaries
 		var vBegin = this.object.beginTime() / this.timeline.scale,
@@ -59,7 +60,7 @@
 	/**
 	 * Render context
 	 */
-	VisualObject.prototype.render = function( ctx, x, y, height, scale ) {
+	TimelineVisualObject.prototype.render = function( ctx, x, y, width, height, scale ) {
 
 		// The object boundaries
 		var vBegin = this.object.beginTime() / this.timeline.scale + this.timeline.scrollX;
@@ -70,7 +71,7 @@
 	 * Handle mouse move event
 	 * The coordinates are on time and frame values.
 	 */
-	VisualObject.prototype.mouseMove = function( xTime, xFrame ) {
+	TimelineVisualObject.prototype.mouseMove = function( relative, absolute, info ) {
 
 	}
 
@@ -78,15 +79,14 @@
 	 * Handle mouse down event
 	 * The coordinates are on time and frame values.
 	 */
-	VisualObject.prototype.mouseDown = function( xTime, xFrame ) {
-
+	TimelineVisualObject.prototype.mouseDown = function( relative, absolute, info ) {
 	}
 
 	/**
 	 * Handle mouse up event
 	 * The coordinates are on time and frame values.
 	 */
-	VisualObject.prototype.mouseUp = function( xTime, xFrame ) {
+	TimelineVisualObject.prototype.mouseUp = function( relative, absolute, info ) {
 
 	}
 

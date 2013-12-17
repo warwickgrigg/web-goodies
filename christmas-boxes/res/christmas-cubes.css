@@ -70,11 +70,11 @@
   -o-transform: translateZ(50px);
 }
 .cb-host a.cube .b.fr {
-  transform: rotateX(180deg) translateZ(-50px);
-  -webkit-transform: rotateX(180deg) translateZ(-50px);
-  -moz-transform: rotateX(180deg) translateZ(-50px);
-  -ms-transform: rotateX(180deg) translateZ(-50px);
-  -o-transform: rotateX(180deg) translateZ(-50px);
+  transform: rotateX(180deg) translateZ(-49px);
+  -webkit-transform: rotateX(180deg) translateZ(-49px);
+  -moz-transform: rotateX(180deg) translateZ(-49px);
+  -ms-transform: rotateX(180deg) translateZ(-49px);
+  -o-transform: rotateX(180deg) translateZ(-49px);
   background-color: #000000;
 }
 .cb-host a.cube .f.bk {
@@ -86,11 +86,11 @@
   background-color: #666666;
 }
 .cb-host a.cube .b.bk {
-  transform: translateZ(-50px);
-  -webkit-transform: translateZ(-50px);
-  -moz-transform: translateZ(-50px);
-  -ms-transform: translateZ(-50px);
-  -o-transform: translateZ(-50px);
+  transform: translateZ(-49px);
+  -webkit-transform: translateZ(-49px);
+  -moz-transform: translateZ(-49px);
+  -ms-transform: translateZ(-49px);
+  -o-transform: translateZ(-49px);
   background-color: #666666;
 }
 .cb-host a.cube .f.bt {
@@ -103,11 +103,11 @@
   background-position: 0px 0px;
 }
 .cb-host a.cube .b.bt {
-  transform: rotateX(90deg) translateZ(-50px);
-  -webkit-transform: rotateX(90deg) translateZ(-50px);
-  -moz-transform: rotateX(90deg) translateZ(-50px);
-  -ms-transform: rotateX(90deg) translateZ(-50px);
-  -o-transform: rotateX(90deg) translateZ(-50px);
+  transform: rotateX(90deg) translateZ(-49px);
+  -webkit-transform: rotateX(90deg) translateZ(-49px);
+  -moz-transform: rotateX(90deg) translateZ(-49px);
+  -ms-transform: rotateX(90deg) translateZ(-49px);
+  -o-transform: rotateX(90deg) translateZ(-49px);
 }
 .cb-host a.cube .f.rt {
   transform: rotateY(90deg) translateZ(50px);
@@ -120,11 +120,11 @@
   background-position: 0px 0px;
 }
 .cb-host a.cube .b.rt {
-  transform: rotateY(270deg) translateZ(-50px);
-  -webkit-transform: rotateY(270deg) translateZ(-50px);
-  -moz-transform: rotateY(270deg) translateZ(-50px);
-  -ms-transform: rotateY(270deg) translateZ(-50px);
-  -o-transform: rotateY(270deg) translateZ(-50px);
+  transform: rotateY(270deg) translateZ(-49px);
+  -webkit-transform: rotateY(270deg) translateZ(-49px);
+  -moz-transform: rotateY(270deg) translateZ(-49px);
+  -ms-transform: rotateY(270deg) translateZ(-49px);
+  -o-transform: rotateY(270deg) translateZ(-49px);
   background-color: #4d4d4d;
 }
 .cb-host a.cube .f.lt {
@@ -138,11 +138,11 @@
   background-position: 0px 0px;
 }
 .cb-host a.cube .b.lt {
-  transform: rotateY(90deg) translateZ(-50px);
-  -webkit-transform: rotateY(90deg) translateZ(-50px);
-  -moz-transform: rotateY(90deg) translateZ(-50px);
-  -ms-transform: rotateY(90deg) translateZ(-50px);
-  -o-transform: rotateY(90deg) translateZ(-50px);
+  transform: rotateY(90deg) translateZ(-49px);
+  -webkit-transform: rotateY(90deg) translateZ(-49px);
+  -moz-transform: rotateY(90deg) translateZ(-49px);
+  -ms-transform: rotateY(90deg) translateZ(-49px);
+  -o-transform: rotateY(90deg) translateZ(-49px);
   background-color: #1a1a1a;
 }
 .cb-host a.cube .f.fr .num {

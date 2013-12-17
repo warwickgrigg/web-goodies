@@ -230,7 +230,9 @@
 		// register a callback function, appropriate for re-indexing the timeline object.
 		if (object.updateTimeline) {
 			object.updateTimeline = (function() {
-				this.reIndex( object, objectIndex );
+				// Rebuild index
+				this.rebuildIndex();				
+				//this.reIndex( object, objectIndex );
 			}).bind(this);
 		}
 

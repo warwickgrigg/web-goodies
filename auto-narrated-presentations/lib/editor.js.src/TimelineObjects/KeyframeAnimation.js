@@ -9,7 +9,7 @@
 
 		// Set some default values
 		this.begin = 0;
-		this.end = 1000;
+		this.duration = 1000;
 
 		// Prepare keyframe info
 		this.keyframes = [ ];
@@ -81,7 +81,7 @@
 	KeyframeAnimation.prototype.onPlace = function() {
 
 		// Update max value
-		this.end = this.timeline.frameCount * this.timeline.frameWidth;
+		this.duration = this.timeline.frameCount * this.timeline.frameWidth;
 
 		// Update keyframeInfo
 		this.keyframeIndex = [];

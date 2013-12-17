@@ -24,7 +24,7 @@
 		wordColors		: [ '#FFFFFF', '#D0D0D0' ],
 		wordFont		: '10pt Tahoma',
 		wordFontColor	: '#333333',
-		wordBorder		: '#333333',
+		wordBorder		: '#666666',
 
 		focusedWordBack	: '#FF9900',
 		focusedWordFront: '#FFFFFF',
@@ -33,8 +33,20 @@
 		framesBorder	: '#333333',
 		framesFront		: '#999999'
 
-
 	};
+
+	/**
+	 * Timeline visual configuration
+	 */
+	var TimelineConfiguration = {
+
+		paddingTop		: 15,
+		heightWords 	: 24,
+		heightObjects	: 12,
+		paddingMiddle	: 2,
+		wordsSpacer		: 5
+
+	}
 
 	/**
 	 * The timeline canvas is the clock source and
@@ -63,6 +75,9 @@
 		this.scrollY = 0;
 
 		// Dragging info
+		this.dragTimeline = false;
+		this.dragTimelineObject = null;
+		this.dragTimelineOffset = 0;
 		this.dragCursor = false;
 		this.dragging = false;
 		this.dragMode = 0;
@@ -101,7 +116,7 @@
 		$(this.logic).on('objectAdded', (function(e, object, index) {
 
 			// Get visual representation of the specified timeline object
-			var visualObject = VisualObject.visualFor( object, this );
+			var visualObject = TimelineVisualObject.visualFor( object, this );
 
 			// Words visual go to a diferent array
 			if (visualObject instanceof TimelineWordsVisual) {
@@ -154,6 +169,18 @@
 				// Wrap scroll
 				this.wrapScroll();
 
+			} else if (this.dragTimeline) {
+
+				// Change the begin time of the specified timeline object
+				var newOffset = this.dragTimelineOffset + (e.offsetX - this.dragAnchorX) / this.scale;
+				if (newOffset < 0) newOffset=0;
+				if (newOffset + this.dragTimelineObject.object.duration > this.logic.frameCount * this.logic.frameWidth ) {
+					newOffset = this.logic.frameCount * this.logic.frameWidth - this.dragTimelineObject.object.duration;
+				}
+				this.dragTimelineObject.object.begin = this.logic.frameSnap( newOffset );
+
+				this.dragTimelineObject.object.updateTimeline();
+
 			} else {
 
 				// Calculate the position in pixels of the mouse cursor
@@ -177,6 +204,9 @@
 					if (this.dragCursor)
 						this.clock.set( this.cursorPos );
 
+					// Forward event to the objects
+					this.forwardMouseEvent( 'mouseMove', e.offsetX, e.offsetY, false );
+
 				} else {
 
 					// Update flags
@@ -195,6 +225,7 @@
 		$(this.canvas).mouseout( (function(e) {
 
 			if (this.dragging) return;
+			if (this.dragTimeline) return;
 
 			this.hoverScrollbar = false;
 			this.cursorPos = -1;
@@ -207,6 +238,13 @@
 		$(this.canvas).mousedown( (function(e) {
 			e.preventDefault();
 			var x = e.offsetX, y = e.offsetY;
+
+			// Forward event to the objects
+			if (this.forwardMouseEvent( 'mouseDown', e.offsetX, e.offsetY, e.button, false )) {
+				// Don't continue if we are handled
+			    this.redraw();
+				return;
+			}
 
 			// Middle button enables dragging
 			if (e.button == 1) {
@@ -229,8 +267,31 @@
 
 			} else if (e.button == 0) {
 
-				this.clock.set( this.cursorPos );
-				this.dragCursor = true;
+				// Check for dragging a timeline object
+				var oDrag = this.timelineObjectFromCursor( e.offsetX, e.offsetY );
+				if (oDrag != null) {
+
+					// Set dragging flag on the object
+					oDrag.dragging = true;
+
+					// Setup dragging info
+					this.dragTimeline = true;
+					this.dragTimelineObject = oDrag;
+					this.dragTimelineOffset = oDrag.object.begin;
+					this.dragAnchorX = e.offsetX;
+
+					// Redraw to apply the dragging flag
+					this.redraw();
+
+					// Change cursor
+					$(this.canvas).css('cursor', 'move');
+
+				} else {
+
+					this.clock.set( this.cursorPos );
+					this.dragCursor = true;
+
+				}
 
 			}
 
@@ -240,14 +301,26 @@
 		// (Capture events in window level so we can catch events
 		//  fired when the timeline is not focused)
 		$(window).mouseup( (function(e) {
-
-			this.dragCursor = false;
+			e.preventDefault();
 
 			if (this.dragging) {
 				this.dragging = false;
 				this.dragMode = 0;
 				$(this.canvas).css('cursor', 'default');
 			}
+
+			if (this.dragTimeline) {
+				this.dragTimelineObject.dragging = false;
+				this.dragTimeline = false;
+				$(this.canvas).css('cursor', 'default');
+			}
+
+			this.dragCursor = false;
+			this.dragTimeline = false;
+
+			// Forward event to the objects
+			this.forwardMouseEvent( 'mouseUp', e.offsetX, e.offsetY, e.button, true );
+		    this.redraw();
 
 		}).bind(this));
 
@@ -335,30 +408,182 @@
 	}
 
 	/**
-	 * Draw the timeline objects
+	 * Get a timeline object from the cursor
 	 */
-	TimelineCanvas.prototype.drawObjects = function( ctx ) {
-		var y = 15,
-			heightWords = 24,
-			heightObjects = 12,
-			padding = 2;
+	TimelineCanvas.prototype.timelineObjectFromCursor = function( mouseX, mouseY, collideWords ) {
+		var y = TimelineConfiguration.paddingTop,
+			heightWords = TimelineConfiguration.heightWords,
+			heightObjects = TimelineConfiguration.heightObjects,
+			padding = TimelineConfiguration.paddingMiddle;
 
-		// Render words
+
+		// Check words
 		for (var i=0; i<this.wordObjects.length; i++) {
-			if (this.wordObjects[i].isVisible()) {
-				var x = this.wordObjects[i].object.beginTime() / this.scale + this.scrollX;
-				this.wordObjects[i].render( ctx, x, y, heightWords, this.scale );
+			//if (this.wordObjects[i].isVisible()) {
+				var x = this.wordObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.wordObjects[i].object.endTime() - this.wordObjects[i].object.beginTime()) * this.scale;
+				if ((mouseX >= x) && (mouseX <= x+w) && (mouseY >= y) && (mouseY <= y+heightWords) && collideWords) {
+					return this.wordObjects[i];
+				}
 				y += heightWords + padding;
-			}
+			//}
 		}
+
+		// Spacer between the two objects
+		y += TimelineConfiguration.wordsSpacer;
 
 		// Render objects
 		for (var i=0; i<this.visualObjects.length; i++) {
-			if (this.visualObjects[i].isVisible()) {
-				var x = this.visualObjects[i].object.beginTime() / this.scale + this.scrollX;
-				this.visualObjects[i].render( ctx, x, y, heightObjects, this.scale );
+			//if (this.visualObjects[i].isVisible()) {
+				var x = this.visualObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.visualObjects[i].object.endTime() - this.visualObjects[i].object.beginTime()) * this.scale;
+				if ((mouseX >= x) && (mouseX <= x+w) && (mouseY >= y) && (mouseY <= y+heightObjects)) {
+					return this.visualObjects[i];
+				}
 				y += heightObjects + padding;
-			}
+			//}
+		}
+
+		// Return none
+		return null;
+	}
+
+	/**
+	 * Forward mouse event
+	 */
+	TimelineCanvas.prototype.forwardMouseEvent = function( type, mouseX, mouseY, button, overflow ) {
+		var y = TimelineConfiguration.paddingTop,
+			heightWords = TimelineConfiguration.heightWords,
+			heightObjects = TimelineConfiguration.heightObjects,
+			padding = TimelineConfiguration.paddingMiddle,
+			ans = false;
+
+		// Calculate frame based on current offset
+		var currentFrame = this.logic.frameOf( this.cursorPos );
+
+		// Render words
+		for (var i=0; i<this.wordObjects.length; i++) {
+			//if (this.wordObjects[i].isVisible()) {
+				var x = this.wordObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.wordObjects[i].object.endTime() - this.wordObjects[i].object.beginTime()) * this.scale;
+
+				if ( overflow || ((mouseY >= y) && (mouseY <= y+heightWords)) ) {
+					ans = this.wordObjects[i][type](
+						{
+							'x': mouseX - x,
+							'y': mouseY - y,
+							'frame': currentFrame - this.wordObjects[i].object.beginFrame(),
+							'time': this.cursorPos - this.wordObjects[i].object.beginTime()
+						},
+						{
+							'x': mouseX,
+							'y': mouseY,
+							'frame': currentFrame,
+							'time': this.cursorPos
+						},
+						{
+							'button': button,
+							'canvas': this.canvas
+						});
+					if ( !overflow && (ans === true)) return true;
+				}
+
+				y += heightWords + padding;
+			//}
+		}
+
+		// Spacer between the two objects
+		y += TimelineConfiguration.wordsSpacer;
+
+		// Render objects
+		for (var i=0; i<this.visualObjects.length; i++) {
+			//if (this.visualObjects[i].isVisible()) {
+				var x = this.visualObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.visualObjects[i].object.endTime() - this.visualObjects[i].object.beginTime()) * this.scale;
+
+				if ( overflow || ((mouseY >= y) && (mouseY <= y+heightObjects)) ) {
+					ans = this.visualObjects[i][type](
+						{
+							'x': mouseX - x,
+							'y': mouseY - y,
+							'frame': currentFrame - this.visualObjects[i].object.beginFrame(),
+							'time': this.cursorPos - this.visualObjects[i].object.beginTime()
+						},
+						{
+							'x': mouseX,
+							'y': mouseY,
+							'frame': currentFrame,
+							'time': this.cursorPos
+						},
+						{
+							'button': button,
+							'canvas': this.canvas
+						});
+					if ( !overflow && (ans === true)) return true;
+				}
+
+				y += heightObjects + padding;
+			//}
+		}
+
+		// Default false
+		return false;
+
+	};
+
+	/**
+	 * Draw the timeline objects
+	 */
+	TimelineCanvas.prototype.drawObjects = function( ctx ) {
+		var y = TimelineConfiguration.paddingTop,
+			heightWords = TimelineConfiguration.heightWords,
+			heightObjects = TimelineConfiguration.heightObjects,
+			padding = TimelineConfiguration.paddingMiddle;
+
+		// Render words
+		for (var i=0; i<this.wordObjects.length; i++) {
+			//if (this.wordObjects[i].isVisible()) {
+				var x = this.wordObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.wordObjects[i].object.endTime() - this.wordObjects[i].object.beginTime()) * this.scale;
+
+				// Crisp line fix
+		        //var iStrokeWidth = 1 + x;  
+		        //var iTranslate = (iStrokeWidth % 2) / 2;  
+		        ctx.save();
+		        ctx.translate(0.5,0.5);//iTranslate, iTranslate);  
+
+		        // Render object
+				this.wordObjects[i].render( ctx, x, y, w, heightWords, this.scale );
+				y += heightWords + padding;
+
+				// Restore fix
+		        ctx.restore();
+
+			//}
+		}
+
+		// Spacer between the two objects
+		y += TimelineConfiguration.wordsSpacer;
+
+		// Render objects
+		for (var i=0; i<this.visualObjects.length; i++) {
+			//if (this.visualObjects[i].isVisible()) {
+				var x = this.visualObjects[i].object.beginTime() * this.scale + this.scrollX,
+					w = (this.visualObjects[i].object.endTime() - this.visualObjects[i].object.beginTime()) * this.scale;
+
+				// Crisp line fix
+		        //var iStrokeWidth = 1 + x;  
+		        //var iTranslate = (iStrokeWidth % 2) / 2;  
+		        ctx.save();
+		        ctx.translate(0.5,0.5);//iTranslate, iTranslate);  
+
+		        // Render object
+				this.visualObjects[i].render( ctx, x, y, w, heightObjects, this.scale );
+				y += heightObjects + padding;
+
+				// Restore fix
+		        ctx.restore();
+			//}
 		}
 	}
 

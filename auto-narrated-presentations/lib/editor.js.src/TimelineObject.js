@@ -6,7 +6,7 @@
 	 */
 	var TimelineObject = glob.TimelineObject = function( ) {
 		this.begin = 0;
-		this.end = 0;
+		this.duration = 0;
 		this.timeline = null;
 	}
 
@@ -30,7 +30,7 @@
 	 * Return the timestamp (in milliseconds) of the last frame
 	 */
 	TimelineObject.prototype.endTime = function() {
-		return this.end;
+		return this.begin + this.duration;
 	}
 
 	/**
@@ -50,12 +50,18 @@
 	}
 
 	/**
+	 * Return the width in frames
+	 */
+	TimelineObject.prototype.framesWide = function() {
+		if (!this.timeline) return null;
+		return this.timeline.frameOf( this.duration );
+	}
+
+	/**
 	 * This function updates the visual representation of the object on the stage and on the timeline.
 	 * Placeholder function that will be replaced upon insertion on timeline logic.
 	 */
-	TimelineObject.prototype.updateTimeline = function() {
-
-	}
+	TimelineObject.prototype.updateTimeline = function() { }
 
 	/**
 	 * Callback functions from the timeline logic

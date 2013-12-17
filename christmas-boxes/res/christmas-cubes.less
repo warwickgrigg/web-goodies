@@ -204,7 +204,7 @@
 			.transform( translateZ( (@cubesize/2) ) );
 		}
 		.b.fr { 
-			.transform( rotateX(180deg) translateZ(-(@cubesize/2)) );
+			.transform( rotateX(180deg) translateZ(-(@cubesize/2-1)) );
 			background-color: darken(@colorBackFace, 20%);
 		}
 
@@ -213,7 +213,7 @@
 			background-color: darken(@colorFrontFace, 20%);
 		}
 		.b.bk { 
-			.transform( translateZ(-(@cubesize/2)) ); 
+			.transform( translateZ(-(@cubesize/2-1)) ); 
 			background-color: lighten(@colorBackFace, 20%);
 		}
 
@@ -223,7 +223,7 @@
 			background-position: @posBottomFace;
 		}
 		.b.bt { 
-			.transform( rotateX(90deg) translateZ(-(@cubesize/2)) ); 
+			.transform( rotateX(90deg) translateZ(-(@cubesize/2-1)) ); 
 		}
 
 		.f.rt { 
@@ -233,7 +233,7 @@
 			background-position: @posRightFace;
 		}
 		.b.rt { 
-			.transform( rotateY(270deg) translateZ(-(@cubesize/2)) ); 
+			.transform( rotateY(270deg) translateZ(-(@cubesize/2-1)) ); 
 			background-color: lighten(@colorBackFace, 10%);
 		}
 
@@ -244,7 +244,7 @@
 			background-position: @posLeftFace;
 		}
 		.b.lt { 
-			.transform( rotateY(90deg) translateZ(-(@cubesize/2)) );
+			.transform( rotateY(90deg) translateZ(-(@cubesize/2-1)) );
 			background-color: darken(@colorBackFace, 10%);
 		}
 

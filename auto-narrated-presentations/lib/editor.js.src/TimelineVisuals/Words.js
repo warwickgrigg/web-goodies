@@ -4,16 +4,16 @@
 	 * A Voice object encapsulates a sound object
 	 */
 	var TimelineWordsVisual = glob.TimelineWordsVisual = function( voiceObject, timeline ) {
-		VisualObject.call( this, voiceObject, timeline );
+		TimelineVisualObject.call( this, voiceObject, timeline );
 	}
 
-	TimelineWordsVisual.prototype = Object.create( VisualObject.prototype );
-	VisualObject.registerVisual( TimelineWords, TimelineWordsVisual );
+	TimelineWordsVisual.prototype = Object.create( TimelineVisualObject.prototype );
+	TimelineVisualObject.registerVisual( TimelineWords, TimelineWordsVisual );
 
 	/**
 	 * Render context
 	 */
-	TimelineWordsVisual.prototype.render = function( ctx, x, y, height, scale ) {
+	TimelineWordsVisual.prototype.render = function( ctx, x, y, width, h, scale ) {
 
 		// Start rendering elements
 		var l,w,focus;
@@ -21,7 +21,7 @@
 
 		// Draw background
 		ctx.fillStyle = this.timeline.palette.wordColors[c];
-		ctx.fillRect( x,y, parseInt(this.object.duration)*scale ,height );
+		ctx.fillRect( x,y, parseInt(this.object.duration)*scale ,h );
 
 		// Draw boxes
 		for (var i=0; i<this.object.words.length; i++) {
@@ -49,7 +49,7 @@
 			} else {
 				ctx.fillStyle = this.timeline.palette.wordColors[c];
 			}
-			ctx.fillRect( l,y,w,height );
+			ctx.fillRect( l,y,w,h );
 
 			// Draw font
 			ctx.textAlign = "start"; 
@@ -60,7 +60,7 @@
 			} else {
 				ctx.fillStyle = this.timeline.palette.wordFontColor;
 			}
-			ctx.fillText( word[1], l+2, y+height/2 );
+			ctx.fillText( word[1], l+2, y+h/2 );
 
 			// Pick next color for the word
 			if (++c >= this.timeline.palette.wordColors.length) c=0;
@@ -70,7 +70,7 @@
 		// Draw frame
 		ctx.strokeStyle = this.timeline.palette.wordBorder;
 		ctx.lineWidth = 1;
-		ctx.strokeRect( x,y,w+l-x,height );
+		ctx.strokeRect( x,y,w+l-x,h );
 
 
 	}

@@ -7,11 +7,20 @@
 
 		background 		: '#EFEFEF',
 
+		// Bounding box
 		ctlBoxColor		: '#000000',
-		ctlHandlerMove	: '#99CCFF',
-		ctlHandleRotate	: '#00CC66',
-		ctlActiveHandle	: '#FF6666',
 
+		// Control handlers
+		ctlHandlerMove	: '#99CCFF',
+		ctlHBorderMove  : '#336699',
+
+		ctlHandlerRotate: '#00CC66',
+		ctlHBorderRotate: '#006600',
+
+		ctlActiveHandle	: '#FF6666',
+		ctlHBorderActive: '#800000',
+
+		// The border of the "RECORD Frame"
 		ctlAnimateBorder: '#FF0000'
 
 	};
@@ -371,6 +380,12 @@
 		if (!this.editable) return;
 		var bbox = this.controlBBox = this.controlObject.getBoundingBox();
 
+		// Crisp line fix
+        //var iStrokeWidth = 1 + x;  
+        //var iTranslate = (iStrokeWidth % 2) / 2;  
+        ctx.save();
+        ctx.translate(0.5,0.5);//iTranslate, iTranslate);  
+
 		// Draw the bounding box rectangle
 	    ctx.beginPath();
 		ctx.rect( bbox.left, bbox.top, bbox.width, bbox.height );
@@ -410,11 +425,12 @@
 			    		  PaletteConfig.handlerSize );
 			    if (active) {
 			    	ctx.fillStyle = this.palette.ctlActiveHandle;
+				    ctx.strokeStyle = this.palette.ctlHBorderActive;
 			    } else {
 					ctx.fillStyle = this.palette.ctlHandlerMove;
+				    ctx.strokeStyle = this.palette.ctlHBorderMove;
 			    }
 				ctx.fill();
-			    ctx.strokeStyle = this.palette.ctlBoxColor;
 			    ctx.stroke();
 			}).bind(this);
 
@@ -424,11 +440,12 @@
 			    ctx.arc(x, y, PaletteConfig.handlerSize/2, 0, 2 * Math.PI, false);
 			    if (active) {
 			    	ctx.fillStyle = this.palette.ctlActiveHandle;
+				    ctx.strokeStyle = this.palette.ctlHBorderActive;
 			    } else {
-					ctx.fillStyle = this.palette.ctlHandleRotate;
+					ctx.fillStyle = this.palette.ctlHandlerRotate;
+				    ctx.strokeStyle = this.palette.ctlHBorderRotate;
 			    }
 				ctx.fill();
-			    ctx.strokeStyle = this.palette.ctlBoxColor;
 			    ctx.stroke();
 			}).bind(this);
 
@@ -471,6 +488,9 @@
 			this.controlRotPoint = [rotX, rotY];
 
 		}
+
+		// Restore
+		ctx.restore();
 
 	}
 
