@@ -89,6 +89,11 @@
 
 	}
 
+	StoryEditor.prototype.setWords = function( wordData ) {
+
+	}
+
+
 	StoryEditor.prototype.resize = function() {
 		var width = this.container.innerWidth(),
 			height = this.container.innerHeight()-5;
