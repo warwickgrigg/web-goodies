@@ -322,7 +322,10 @@
 		// Scan objects and return the one that hits the cursor
 		for (var i=0; i<this.objects.length; i++) {
 			if (inBBox(this.objects[i].getBoundingBox())) {
-				return this.objects[i];
+				if ( (this.objects[i].timelineObject != null) &&
+					 (this.objects[i].timelineObject.isVisible() ) &&
+					  !this.objects[i].locked )
+					return this.objects[i];
 			}
 		}
 
@@ -385,6 +388,7 @@
 	 */
 	SceneCanvas.prototype.drawControlBox = function( ctx ) {
 		if (this.controlObject == null) return;
+		if ((this.controlObject.timelineObject != null) && !this.controlObject.timelineObject.isVisible()) return;
 		if (!this.editable) return;
 		var bbox = this.controlBBox = this.controlObject.getBoundingBox();
 
@@ -399,7 +403,7 @@
 		ctx.rect( bbox.left, bbox.top, bbox.width, bbox.height );
 
 		// If the object is locked, just draw the paddlock and exit
-		if (this.controlObject.locked) {
+		if (this.controlObject.locked || this.animateMode) {
 
 			// Draw dashed border
 			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
@@ -415,104 +419,86 @@
 
 		}
 
-		if (this.animateMode) {
+		// Draw dashed and reset
+		if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
+		if ( ctx.mozDash !== undefined )       ctx.mozDash = [2];
+	    ctx.lineWidth = 0.8;
+	    ctx.strokeStyle = this.palette.ctlBoxColor;
+		ctx.stroke();
+		if ( ctx.setLineDash !== undefined )   ctx.setLineDash([]);
+		if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
 
-			// Add a cross in the middle
-			var crossSize = 50;
-			ctx.moveTo( bbox.centerx - crossSize/2, bbox.centery );
-			ctx.lineTo( bbox.centerx + crossSize/2, bbox.centery );
-			ctx.moveTo( bbox.centerx, bbox.centery - crossSize/2 );
-			ctx.lineTo( bbox.centerx, bbox.centery + crossSize/2 );
+		// Draw the 8 control points
+		var drawBox = (function(x,y,active){
+		    ctx.beginPath();
+		    ctx.lineWidth = 1;
+		    ctx.rect( x - PaletteConfig.handlerSize/2, 
+		    		  y - PaletteConfig.handlerSize/2, 
+		    		  PaletteConfig.handlerSize, 
+		    		  PaletteConfig.handlerSize );
+		    if (active) {
+		    	ctx.fillStyle = this.palette.ctlActiveHandle;
+			    ctx.strokeStyle = this.palette.ctlHBorderActive;
+		    } else {
+				ctx.fillStyle = this.palette.ctlHandlerMove;
+			    ctx.strokeStyle = this.palette.ctlHBorderMove;
+		    }
+			ctx.fill();
+		    ctx.stroke();
+		}).bind(this);
 
-			// Draw alltogether
-		    ctx.lineWidth = 2;
-		    ctx.strokeStyle = this.palette.ctlAnimateBorder;
-			ctx.stroke();
+		var drawCircle = (function(x,y,active){
+		    ctx.beginPath();
+		    ctx.lineWidth = 1;
+		    ctx.arc(x, y, PaletteConfig.handlerSize/2, 0, 2 * Math.PI, false);
+		    if (active) {
+		    	ctx.fillStyle = this.palette.ctlActiveHandle;
+			    ctx.strokeStyle = this.palette.ctlHBorderActive;
+		    } else {
+				ctx.fillStyle = this.palette.ctlHandlerRotate;
+			    ctx.strokeStyle = this.palette.ctlHBorderRotate;
+		    }
+			ctx.fill();
+		    ctx.stroke();
+		}).bind(this);
 
-		} else {
+		// Draw bounding box (with the active handler in a different color)
+		drawBox( bbox.left, bbox.top, (this.dragging && (this.dragMode == 1)) );
+		drawBox( bbox.right, bbox.top, (this.dragging && (this.dragMode == 2)) );
+		drawBox( bbox.left, bbox.bottom, (this.dragging && (this.dragMode == 3)) );
+		drawBox( bbox.right, bbox.bottom, (this.dragging && (this.dragMode == 4)) );
 
-			// Draw dashed and reset
-			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
-			if ( ctx.mozDash !== undefined )       ctx.mozDash = [2];
-		    ctx.lineWidth = 0.8;
-		    ctx.strokeStyle = this.palette.ctlBoxColor;
-			ctx.stroke();
-			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([]);
-			if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
+		// Calculate the position of the rotation bar
+		var dist = Math.sqrt(
+				Math.pow( bbox.width/2, 2 ) +
+				Math.pow( bbox.height/2, 2 )
+			) + PaletteConfig.handlerSize + 5,
+			rotX = Math.cos( bbox.rotation ) * dist + (bbox.left + bbox.width/2),
+			rotY = Math.sin( bbox.rotation ) * dist + (bbox.top + bbox.height/2);
 
-			// Draw the 8 control points
-			var drawBox = (function(x,y,active){
-			    ctx.beginPath();
-			    ctx.lineWidth = 1;
-			    ctx.rect( x - PaletteConfig.handlerSize/2, 
-			    		  y - PaletteConfig.handlerSize/2, 
-			    		  PaletteConfig.handlerSize, 
-			    		  PaletteConfig.handlerSize );
-			    if (active) {
-			    	ctx.fillStyle = this.palette.ctlActiveHandle;
-				    ctx.strokeStyle = this.palette.ctlHBorderActive;
-			    } else {
-					ctx.fillStyle = this.palette.ctlHandlerMove;
-				    ctx.strokeStyle = this.palette.ctlHBorderMove;
-			    }
-				ctx.fill();
-			    ctx.stroke();
-			}).bind(this);
-
-			var drawCircle = (function(x,y,active){
-			    ctx.beginPath();
-			    ctx.lineWidth = 1;
-			    ctx.arc(x, y, PaletteConfig.handlerSize/2, 0, 2 * Math.PI, false);
-			    if (active) {
-			    	ctx.fillStyle = this.palette.ctlActiveHandle;
-				    ctx.strokeStyle = this.palette.ctlHBorderActive;
-			    } else {
-					ctx.fillStyle = this.palette.ctlHandlerRotate;
-				    ctx.strokeStyle = this.palette.ctlHBorderRotate;
-			    }
-				ctx.fill();
-			    ctx.stroke();
-			}).bind(this);
-
-			// Draw bounding box (with the active handler in a different color)
-			drawBox( bbox.left, bbox.top, (this.dragging && (this.dragMode == 1)) );
-			drawBox( bbox.right, bbox.top, (this.dragging && (this.dragMode == 2)) );
-			drawBox( bbox.left, bbox.bottom, (this.dragging && (this.dragMode == 3)) );
-			drawBox( bbox.right, bbox.bottom, (this.dragging && (this.dragMode == 4)) );
-
-			// Calculate the position of the rotation bar
-			var dist = Math.sqrt(
-					Math.pow( bbox.width/2, 2 ) +
-					Math.pow( bbox.height/2, 2 )
-				) + PaletteConfig.handlerSize + 5,
-				rotX = Math.cos( bbox.rotation ) * dist + (bbox.left + bbox.width/2),
-				rotY = Math.sin( bbox.rotation ) * dist + (bbox.top + bbox.height/2);
-
-			// If we are dragging, get the position of the rotating point
-			if (this.dragging && (this.dragMode == 5)) {
-				rotX = this.dragRotPoint[0];
-				rotY = this.dragRotPoint[1];
-			}
-
-			// Draw the line to the drag handler
-			ctx.beginPath();
-		    ctx.lineWidth = 0.8;
-		    ctx.strokeStyle = this.palette.ctlBoxColor;
-			ctx.moveTo( bbox.left + bbox.width/2, bbox.top + bbox.height/2);
-			ctx.lineTo( rotX, rotY );
-
-			// Draw dashed and reset
-			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
-			if ( ctx.mozDash !== undefined )       ctx.mozDash = [2];
-			ctx.stroke();
-			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([]);
-			if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
-
-			// Render and store the position of the rotation point
-			drawCircle(rotX, rotY, (this.dragging && (this.dragMode == 5)));
-			this.controlRotPoint = [rotX, rotY];
-
+		// If we are dragging, get the position of the rotating point
+		if (this.dragging && (this.dragMode == 5)) {
+			rotX = this.dragRotPoint[0];
+			rotY = this.dragRotPoint[1];
 		}
+
+		// Draw the line to the drag handler
+		ctx.beginPath();
+	    ctx.lineWidth = 0.8;
+	    ctx.strokeStyle = this.palette.ctlBoxColor;
+		ctx.moveTo( bbox.left + bbox.width/2, bbox.top + bbox.height/2);
+		ctx.lineTo( rotX, rotY );
+
+		// Draw dashed and reset
+		if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
+		if ( ctx.mozDash !== undefined )       ctx.mozDash = [2];
+		ctx.stroke();
+		if ( ctx.setLineDash !== undefined )   ctx.setLineDash([]);
+		if ( ctx.mozDash !== undefined )       ctx.mozDash = [];
+
+		// Render and store the position of the rotation point
+		drawCircle(rotX, rotY, (this.dragging && (this.dragMode == 5)));
+		this.controlRotPoint = [rotX, rotY];
 
 		// Restore
 		ctx.restore();

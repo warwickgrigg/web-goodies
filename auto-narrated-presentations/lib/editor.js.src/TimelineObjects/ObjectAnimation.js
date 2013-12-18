@@ -23,6 +23,9 @@
 			Object.create( sceneObject.variables )	// Last
 		];
 
+		// Update scene object's timeline
+		sceneObject.timelineObject = this;
+
 		// The easing function
 		this.easing = Easing.easeInOutElastic;
 

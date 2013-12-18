@@ -73,6 +73,22 @@
 
 	}
 
+	StoryEditor.prototype.addImage = function( url ) {
+
+		// Prepare the image object
+		var imgObject = new Image();
+			imgObject.src = url;
+
+		// Create scene and timeline object
+		var sco = new ImageObject( imgObject ),
+			to = new ObjectAnimation( sco );
+
+		// Store them in the stage and timeline
+		this.timelineLogic.add( to );
+		this.sceneCanvas.add( sco );
+
+	}
+
 	StoryEditor.prototype.resize = function() {
 		var width = this.container.innerWidth(),
 			height = this.container.innerHeight()-5;

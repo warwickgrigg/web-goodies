@@ -5,7 +5,7 @@
 	 * textual representation of the words.
 	 */
 	var TimelineWords = glob.TimelineWords = function( data ) {
-		glob.TimelineObject.call( this );
+		glob.TimelineObject.call( this, null );
 
 		// Store words
 		this.words = data['words'];
