@@ -10,11 +10,11 @@
 	 */
 	var TimelineVisualObject = glob.TimelineVisualObject = function( timelineObject, timeline ) {
 		this.timeline = timeline;
-		this.object = timelineObject;
+		this.timelineObject = timelineObject;
 		this.dragging = false;
 
-		this.beginFrame = this.timeline.logic.frameOf( this.object.beginTime() );
-		this.endFrame = this.timeline.logic.frameOf( this.object.endTime() );
+		this.beginFrame = this.timeline.logic.frameOf( this.timelineObject.beginTime() );
+		this.endFrame = this.timeline.logic.frameOf( this.timelineObject.endTime() );
 	}
 
 	/**
@@ -44,8 +44,8 @@
 	TimelineVisualObject.prototype.isVisible = function() {
 
 		// The object boundaries
-		var vBegin = this.object.beginTime() / this.timeline.scale,
-			vEnd = this.object.endTime() / this.timeline.scale;
+		var vBegin = this.timelineObject.beginTime() / this.timeline.scale,
+			vEnd = this.timelineObject.endTime() / this.timeline.scale;
 
 		// The timeline boundaries
 		var sBegin = -this.timeline.scrollX,
@@ -63,7 +63,7 @@
 	TimelineVisualObject.prototype.render = function( ctx, x, y, width, height, scale ) {
 
 		// The object boundaries
-		var vBegin = this.object.beginTime() / this.timeline.scale + this.timeline.scrollX;
+		var vBegin = this.timelineObject.beginTime() / this.timeline.scale + this.timeline.scrollX;
 
 	}
 

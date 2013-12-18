@@ -38,6 +38,31 @@
 		$(this.container).append( this.timeline.canvas );
 		$(this.container).append( this.timelineControls.element );
 
+		// Handle selection events
+		$(this.timeline).on('selectionChanged', (function(e, tvo) {
+			if (!tvo) {
+				$(this).trigger('deselected');
+			} else {
+				var tmo = tvo.timelineObject,
+					sco = tmo.sceneObject;
+				
+				$(this).trigger('selected', tmo, tvo, sco);
+
+				// Focus object
+				this.sceneCanvas.setControlBox( sco );
+				
+			}
+		}).bind(this));
+		$(this.sceneCanvas).on('selectionChanged', (function(e, sco) {
+			if (!sco) {
+				$(this).trigger('deselected');
+			} else {
+				var tvo = this.timeline.visualFromSceneObject(sco),
+					tmo = tvo.timelineObject;
+				$(this).trigger('selected', tmo, tvo, sco);
+			}
+		}).bind(this));
+
 		// Set the proper dimentions
 		this.resize();
 

@@ -7,10 +7,10 @@
 		borderKeyFrame: '#666666',
 		borderDragging: '#333333',
 
-		backTween: 		'#6699FF',
+		backTween: 		'#99CCFF',
 		frontTween: 	'#0066CC',
 
-		backFade: 		'rgba(153,255,51,0.5)', 
+		backFade: 		'#99FF33', 
 		anchorFade:  	'#669900',
 		frontFade: 		'#003300',
 
@@ -55,14 +55,8 @@
 		ctx.fillRect( x, y, w, h );		
 
 		// ====================================
-		//  Draw anchors
+		//  Calculate element dimentions
 		// ====================================
-
-		// Calculate the fade-in anchor
-		var entryAniFrames = this.timeline.logic.frameOf( this.object.entryAniDuration ),
-			exitAniFrames = this.timeline.logic.frameOf( this.object.exitAniDuration );
-		if ((entryAniFrames == 0) && (this.object.entryAniDuration != 0)) entryAniFrames=1;
-		if ((exitAniFrames == 0) && (this.object.exitAniDuration != 0)) exitAniFrames=1;
 
 		// Draw the drag handlers
 		var maxh = h-5,
@@ -73,17 +67,73 @@
 		var maxW = this.timeline.logic.frameWidth * scale,
 			midW = maxW/2;
 
+		// ====================================
+		//  Draw tween edges
+		// ====================================
+
+		// Calculate offsets in pixels
+		var fOffset = this.timelineObject.frontOffset * scale,
+			bOffset = this.timelineObject.backOffset * scale;
+
+		// Shorthand some variables
+		var yp = y+h/2, wp = w-bOffset-fOffset, xp = x+fOffset;
+
+		// Draw background
+		ctx.fillStyle = this.palette.backTween;
+		ctx.fillRect( xp, y, wp, h );
+
+		// Left marker
+		ctx.fillStyle = this.palette.frontTween;
+		ctx.fillRect( xp, y, maxW, h );
+
+		// Right marker
+		ctx.fillStyle = this.palette.frontTween;
+		ctx.fillRect( xp+wp-maxW, y, maxW, h );
+
+		// Draw arrow
+		xp += maxW; wp -= maxW*2;
+		ctx.beginPath();
+
+			// Left arrow
+			ctx.moveTo( xp+midW, yp-h/3 );
+			ctx.lineTo( xp+midW+h/3, yp );
+			ctx.lineTo( xp+midW, yp+h/3 );
+
+			// Straight line
+			ctx.moveTo( xp+midW+h/3, yp );
+			ctx.lineTo( xp+wp-midW, yp);
+
+			// Right arrow
+			ctx.moveTo( xp+wp-midW-h/3, yp-h/3 );
+			ctx.lineTo( xp+wp-midW, yp );
+			ctx.lineTo( xp+wp-midW-h/3, yp+h/3 );
+
+		ctx.strokeStyle = this.palette.frontTween;
+		ctx.lineWidth = 1;
+		ctx.stroke();
+
+
+		// ====================================
+		//  Draw anchors
+		// ====================================
+
+		// Calculate the fade-in anchor
+		var entryAniFrames = this.timeline.logic.frameOf( this.timelineObject.entryAniDuration ),
+			exitAniFrames = this.timeline.logic.frameOf( this.timelineObject.exitAniDuration );
+		if ((entryAniFrames == 0) && (this.timelineObject.entryAniDuration != 0)) entryAniFrames=1;
+		if ((exitAniFrames == 0) && (this.timelineObject.exitAniDuration != 0)) exitAniFrames=1;
+
 		// Render entry frames
 		if (entryAniFrames > 0) {
 			var ew = this.timeline.logic.frameWidth * (entryAniFrames-1) * scale;
 
 			// Draw the green background
 			ctx.fillStyle = this.palette.backFade;
-			ctx.fillRect(x,y,ew,h);
+			ctx.fillRect(x,y,ew,h/2);
 
 			// Draw the left anchor
 			ctx.fillStyle = this.palette.anchorFade;
-			ctx.fillRect(x+ew,y,maxW,h);
+			ctx.fillRect(x+ew,y,maxW,h/2);
 
 		}
 
@@ -93,11 +143,11 @@
 
 			// Draw the green background
 			ctx.fillStyle = this.palette.backFade;
-			ctx.fillRect(x+w-ew,y,ew,h);
+			ctx.fillRect(x+w-ew,y,ew,h/2);
 
 			// Draw the right anchor
 			ctx.fillStyle = this.palette.anchorFade;
-			ctx.fillRect(x+w-ew,y,maxW,h);
+			ctx.fillRect(x+w-ew,y,maxW,h/2);
 
 		}
 
@@ -156,39 +206,62 @@
 
 	ObjectAnimationVisual.prototype.mouseMove = function( relative, absolute, info ) {
 		if (this.resizing) {
+			// -------------------------
+			//  Dragging implementation
+			// -------------------------
+
 			if (this.resizeEdge == 0) {
 				var newBegin = this.resizeOffset + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth,
 					newDiff = this.resizeOffset - newBegin
-				this.object.begin = newBegin;
-				this.object.duration = this.resizeDuration + newDiff;
+				this.timelineObject.begin = newBegin;
+				this.timelineObject.duration = this.resizeDuration + newDiff;
 			} else if (this.resizeEdge == 1) {
 				var newDuration = this.resizeDuration + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
-				this.object.duration = newDuration;
+				this.timelineObject.duration = newDuration;
 			} else if (this.resizeEdge == 2) {
 				var newDuration = this.resizeDuration + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
 				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
-				this.object.entryAniDuration = newDuration;
+				this.timelineObject.entryAniDuration = newDuration;
 			} else if (this.resizeEdge == 3) {
 				var newDuration = this.resizeDuration - (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
 				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
-				this.object.exitAniDuration = newDuration;
+				this.timelineObject.exitAniDuration = newDuration;
+			} else if (this.resizeEdge == 4) {
+				var newDuration = this.resizeDuration + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
+				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
+				this.timelineObject.frontOffset = newDuration;
+			} else if (this.resizeEdge == 5) {
+				var newDuration = this.resizeDuration - (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
+				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
+				this.timelineObject.backOffset = newDuration;
 			}
 
-			this.object.updateTimeline();
+			this.timelineObject.updateTimeline();
 
 		} else {
 
+			// --------------------
+			//  Cursor switching
+			// --------------------
+
 			// Calculate the location of the easing anchors
-			var entryAniFrames = this.timeline.logic.frameOf( this.object.entryAniDuration ),
-				exitAniFrames = this.timeline.logic.frameOf( this.object.exitAniDuration ),
-				eaEnter = this.object.beginFrame() + entryAniFrames -1,
-				eaExit = this.object.endFrame() - exitAniFrames;
-			if (this.object.entryAniDuration == 0) eaEnter = false;
-			if (this.object.exitAniDuration == 0) eaExit = false;
+			var entryAniFrames = this.timeline.logic.frameOf( this.timelineObject.entryAniDuration ),
+				exitAniFrames = this.timeline.logic.frameOf( this.timelineObject.exitAniDuration ),
+				frontOffsetFrame = this.timeline.logic.frameOf( this.timelineObject.frontOffset ),
+				backOffsetFrame = this.timeline.logic.frameOf( this.timelineObject.backOffset ),
+				eaEnter = this.timelineObject.beginFrame() + entryAniFrames - 1,
+				eaExit = this.timelineObject.endFrame() - exitAniFrames,
+				eaFront = this.timelineObject.beginFrame() + frontOffsetFrame,
+				eaBack = this.timelineObject.endFrame() - backOffsetFrame - 1;
+			if (this.timelineObject.entryAniDuration == 0) eaEnter = false;
+			if (this.timelineObject.exitAniDuration == 0) eaExit = false;
+			if (this.timelineObject.frontOffset == 0) eaFront = false;
+			if (this.timelineObject.backOffset == 0) eaBack = false;
 
 			// Check for cursor switching
-			if ( (relative.frame == 0) || (relative.frame == this.object.framesWide()-1) ||
-				 (absolute.frame == eaEnter) || (absolute.frame == eaExit) ) {
+			if ( (relative.frame == 0) || (relative.frame == this.timelineObject.framesWide()-1) ||
+				 ( ((absolute.frame == eaEnter) || (absolute.frame == eaExit)) && (relative.y <= info.h/2) ) ||
+				 ( ((absolute.frame == eaFront) || (absolute.frame == eaBack)) && (relative.y > info.h/2) ) ) {
 				$(info.canvas).css('cursor', 'ew-resize');
 			} else {
 				$(info.canvas).css('cursor', 'default');			
@@ -198,40 +271,62 @@
 
 	ObjectAnimationVisual.prototype.mouseDown = function( relative, absolute, info ) {
 		// Calculate the location of the easing anchors
-		var entryAniFrames = this.timeline.logic.frameOf( this.object.entryAniDuration ),
-			exitAniFrames = this.timeline.logic.frameOf( this.object.exitAniDuration ),
-			eaEnter = this.object.beginFrame() + entryAniFrames -1,
-			eaExit = this.object.endFrame() - exitAniFrames;
-		if (this.object.entryAniDuration == 0) eaEnter = false;
-		if (this.object.exitAniDuration == 0) eaExit = false;
+		var entryAniFrames = this.timeline.logic.frameOf( this.timelineObject.entryAniDuration ),
+			exitAniFrames = this.timeline.logic.frameOf( this.timelineObject.exitAniDuration ),
+			frontOffsetFrame = this.timeline.logic.frameOf( this.timelineObject.frontOffset ),
+			backOffsetFrame = this.timeline.logic.frameOf( this.timelineObject.backOffset ),
+			eaEnter = this.timelineObject.beginFrame() + entryAniFrames - 1,
+			eaExit = this.timelineObject.endFrame() - exitAniFrames,
+			eaFront = this.timelineObject.beginFrame() + frontOffsetFrame,
+			eaBack = this.timelineObject.endFrame() - backOffsetFrame - 1;
+		if (this.timelineObject.entryAniDuration == 0) eaEnter = false;
+		if (this.timelineObject.exitAniDuration == 0) eaExit = false;
+		if (this.timelineObject.frontOffset == 0) eaFront = false;
+		if (this.timelineObject.backOffset == 0) eaBack = false;
 
 		if (relative.frame == 0) {
 			this.resizing = true;
 			this.resizeAnchor = absolute.frame;
-			this.resizeOffset = this.object.begin;
-			this.resizeDuration = this.object.duration;
+			this.resizeOffset = this.timelineObject.begin;
+			this.resizeDuration = this.timelineObject.duration;
 			this.resizeEdge = 0;
 			console.log("Begin ");
 			return true;
-		} else if (relative.frame == this.object.framesWide()-1) {
+		} else if (relative.frame == this.timelineObject.framesWide()-1) {
 			this.resizing = true;
 			this.resizeAnchor = absolute.frame;
-			this.resizeDuration = this.object.duration;
+			this.resizeDuration = this.timelineObject.duration;
 			this.resizeEdge = 1;
 			return true;
-		} else if (absolute.frame == eaEnter) {
-			this.resizing = true;
-			this.resizeAnchor = absolute.frame;
-			this.resizeDuration = this.object.entryAniDuration;
-			this.resizeEdge = 2;
-			return true;
-		} else if (absolute.frame == eaExit) {
-			this.resizing = true;
-			this.resizeAnchor = absolute.frame;
-			this.resizeDuration = this.object.exitAniDuration;
-			this.resizeEdge = 3;
-			return true;
-		}
+		} else if (relative.y <= info.h/2) {
+			if (absolute.frame == eaEnter) {
+				this.resizing = true;
+				this.resizeAnchor = absolute.frame;
+				this.resizeDuration = this.timelineObject.entryAniDuration;
+				this.resizeEdge = 2;
+				return true;
+			} else if (absolute.frame == eaExit) {
+				this.resizing = true;
+				this.resizeAnchor = absolute.frame;
+				this.resizeDuration = this.timelineObject.exitAniDuration;
+				this.resizeEdge = 3;
+				return true;
+			}
+		} else if (relative.y > info.h/2) {
+			if (absolute.frame == eaFront) {
+				this.resizing = true;
+				this.resizeAnchor = absolute.frame;
+				this.resizeDuration = this.timelineObject.frontOffset;
+				this.resizeEdge = 4;
+				return true;
+			} else if (absolute.frame == eaBack) {
+				this.resizing = true;
+				this.resizeAnchor = absolute.frame;
+				this.resizeDuration = this.timelineObject.backOffset;
+				this.resizeEdge = 5;
+				return true;
+			}
+		} 
 	}
 
 	ObjectAnimationVisual.prototype.mouseUp = function( relative, absolute, info ) {

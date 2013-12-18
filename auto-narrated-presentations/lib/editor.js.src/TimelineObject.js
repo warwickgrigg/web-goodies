@@ -4,10 +4,11 @@
 	 * TimelineObjects can be placed on timeline and they are used
 	 * for synchronizing arbitrary elements.
 	 */
-	var TimelineObject = glob.TimelineObject = function( ) {
+	var TimelineObject = glob.TimelineObject = function( sceneObject ) {
 		this.begin = 0;
 		this.duration = 0;
 		this.timeline = null;
+		this.sceneObject = sceneObject;
 	}
 
 	/**

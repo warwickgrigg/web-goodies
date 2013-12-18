@@ -120,6 +120,8 @@
 					// Keep it
 				} else {
 					this.controlObject = focusObject;
+					// Let observers know that an object was selected on canvas
+			    	$(this).trigger('selectionChanged', focusObject);					
 				}
 
 				// Handle clicks on object and other positions
@@ -360,9 +362,6 @@
 		// Center object
 		object.variables.x = this.width/2;
 		object.variables.y = this.height/2;
-
-		// Enable control box
-		this.setControlBox( object );
 
 	};
 
