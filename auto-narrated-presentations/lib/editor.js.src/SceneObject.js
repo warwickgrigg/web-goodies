@@ -6,12 +6,11 @@
 	var SceneObject = glob.SceneObject = function() {
 		this.width = 0;
 		this.height = 0;
+		this.locked = true;
 
 		this.filters = [ ];
 
-		this.template = {
-			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true, opacity: 1.0
-		}
+		this.varNames = ['x','y','scalex','scaley','rotation','visible','opacity'];
 		this.variables = {
 			x:0, y:0, scalex:1.0, scaley:1.0, rotation:0.0, visible: true, opacity: 1.0
 		};
@@ -25,9 +24,8 @@
 	 * Update the filters
 	 */
 	SceneObject.prototype.updateVariables = function( time ) {
-		var vars=['x','y','scalex','scaley','rotation','visible','opacity'];
-		for (var i=0; i<vars.length; i++) {
-			this.renderVariables[vars[i]] = this.variables[vars[i]];
+		for (var i=0; i<this.varNames.length; i++) {
+			this.renderVariables[this.varNames[i]] = this.variables[this.varNames[i]];
 		}
 	}
 

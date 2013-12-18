@@ -485,7 +485,9 @@
 							'button': button,
 							'canvas': this.canvas
 						});
-					if ( !overflow && (ans === true)) return true;
+					if ( !overflow && (ans === true)) {
+						return true;
+					}
 				}
 
 				y += heightWords + padding;
@@ -502,6 +504,7 @@
 					w = (this.visualObjects[i].object.endTime() - this.visualObjects[i].object.beginTime()) * this.scale;
 
 				if ( overflow || ((mouseY >= y) && (mouseY <= y+heightObjects)) ) {
+
 					ans = this.visualObjects[i][type](
 						{
 							'x': mouseX - x,
@@ -519,7 +522,9 @@
 							'button': button,
 							'canvas': this.canvas
 						});
-					if ( !overflow && (ans === true)) return true;
+					if ( !overflow && (ans === true)) {
+						return true;
+					}
 				}
 
 				y += heightObjects + padding;

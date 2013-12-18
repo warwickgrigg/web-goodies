@@ -34,6 +34,13 @@
 	}
 
 	/**
+	 * Return the duration in milliseconds
+	 */
+	TimelineObject.prototype.timeWide = function() {
+		return this.duration;
+	}
+
+	/**
 	 * Return the first frame index
 	 */
 	TimelineObject.prototype.beginFrame = function() {
@@ -55,6 +62,15 @@
 	TimelineObject.prototype.framesWide = function() {
 		if (!this.timeline) return null;
 		return this.timeline.frameOf( this.duration );
+	}
+
+	/**
+	 * Check if the object is visible on stage
+	 */
+	TimelineObject.prototype.isVisible = function() {
+		if (!this.timeline) return null;
+		return ( ( this.timeline.currentFrame >= this.beginFrame()) && 
+			     ( this.timeline.currentFrame <= this.endFrame() ) );
 	}
 
 	/**

@@ -29,11 +29,15 @@
 
 		// Render image
 		ctx.save();
+		ctx.globalAlpha = this.renderVariables.opacity;
 		ctx.translate( this.renderVariables.x, this.renderVariables.y );
 		ctx.scale( this.renderVariables.scalex, this.renderVariables.scaley );
 		ctx.rotate( this.renderVariables.rotation*Math.PI/180 );
 		ctx.drawImage( this.image, -this.width/2, -this.height/2 );
 		ctx.restore();
+
+		// Restore alpha
+		ctx.globalAlpha = 1.0;
 		
 	}
 

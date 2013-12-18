@@ -1,5 +1,13 @@
 (function(glob) {
 
+	// Cached images
+	var IMG_PADLOCK = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0U3QjkxQTY2N0Y3MTFFMzkxNDk5NDdENzFBODBBRjYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0U3QjkxQTc2N0Y3MTFFMzkxNDk5NDdENzFBODBBRjYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDRTdCOTFBNDY3RjcxMUUzOTE0OTk0N0Q3MUE4MEFGNiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDRTdCOTFBNTY3RjcxMUUzOTE0OTk0N0Q3MUE4MEFGNiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg65R4cAAAH4SURBVHjarJU9SMNAFMeTNrR1qKARUfzE1g8EdangUHBTxEmtqxRxcHGTgrgLOrk4uShKQREcXNRJHKXaQRx1UBR0ULQo0qap/yuv5drm0gTz4Me95i73f/fe60XO5XISs1AoJAlsEMyxJWAAfIAkOAO7IFP+QiKRKPqKZG4zYA/UcM/qQQBEwDRYAC+iDVwmm4+DI27zb3AN7oFOzybAAfDaFXCDFe73PkXN0hQEk+Cd5sJ0UlsCY2CU/EsQBa/c/CnVpWBLonSLBIY5fwtkDdacgyvy+4HfjkAH5z8J1rDuuSWf1aDNVECWZf55gPN/TBrhjUYPaDZaYJg3/DdiEOyEmwIPhRj4JTTugBvwy0b2nyoLtEKgCywDlSKXqYAerjUlTvALfNL8PBV/mwugRKAPHLOxPAqrhvemMDSAtYoa4HizJPJfWxR1UbvkjNWKBDSzt+hSfK7SVbbuoqLpui75fL4NuK3wwxC7c1QA9gg2vd78nZZEMeOOCmDDpnQ63QPyfe5yuboL3xGnBFifr7JUwUYwRq22stUUsSL72aZZmONFplPUsfWwFjsCStlHxuwEvey+cbvdjVbzXyKgaVpKUap9oqWhaptjXjdMkaqqJ0hDyk50glTGRSm6wPEjqOE6FgXpRtStZgKBZfDeIWoU4yf+BBgAGseNDX6U5ckAAAAASUVORK5CYII=",
+		IMG_MOVIE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1MkRDNjM3RkY4NjdFMzExQTlEQ0YzQjVFNkRGNkQ3RCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2M0E0REVERjY3RjkxMUUzODcyMTlGOUIwRjUxRDgwQiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2M0E0REVERTY3RjkxMUUzODcyMTlGOUIwRjUxRDgwQiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjUyREM2MzdGRjg2N0UzMTFBOURDRjNCNUU2REY2RDdEIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjUyREM2MzdGRjg2N0UzMTFBOURDRjNCNUU2REY2RDdEIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+dVvggAAAArBJREFUeNrUlb+q1EAUxndmktW9gnBFLATxCXwCQREuqIWN9QXfQEULW0ErbQR9C8HGB7ATBG0Eq4vaiChaidfd7CYbf99kTpzNXe22MDDMzPn7ne+cJL5t29Emlx9t+Nl4Asdzkf0y5Uwz4YqRSpVMe6afcH/J+alMTG42ye92wX4OxQX2n4PMfeBhYtcdjrLk/5w1XQP+DGY7hff+KodtOcSmeL+CYh0y7lzb7eVyucN+EtH7HAiyKyGExxzHBYpvRVHUGFeG2NYgaE+XQPAskH1vmiYMkN8k+B1sSs57BZcWQ8/uSHKgB1aRdCmw2fiUsEkjeYTrA8DuEusr5xk+XhX0QVCuJABdHxCnlQRKmCqd4nsa3RP8z7N/RD1HPlEY9cChEHqX06CnLMt4ViIFN9rS2SGvuZfc743H40uI3uFWCw/yWKQo6lHbMnQWLEeeV4ReqA4DUOuLikbmzV7ARJFTFcphyI0q60nei3y45MdqSVZp78y8jTestE4UqYxRQ7CEqkevRHk1TtRkL57s02409yx0rHQ9GAW4HtV1XnpPm5Wbj3DW6LZjwE0KUDI0rXppVcTBcF1rnVCoZHt0tydR0VPpg7mNNOv7xHrLGlPFlsZedjEeNh1FUGHTkiMMyJtU2RA93kIYFAzf+yD/5X24QSUFoX4YR9aUiEg8GvqIFrnOkeOyjPqQ0FmF2B3SxJLg4XxeXYe1Gt3xINtEUZnKWhnJ/B57kSrwqbH6HqEL6YNng/BssVjs1nW9R/oTxI3zWKI8JS6tyfnLduAH8mcMj7Fm3CMdBLUBeV1V1TV0j6jqbAHvd8mqV3yafwaGHzi7111PxM4Wdm84f17zk/mETpXcUgWvCLCPYGHB+v9pomvNR1AHxnL54R8/sxkxXri/UfHf/JM3nuC3AAMAu+y2iAAAAAAAAAAAAAAAAAAAAAA=";
+
+	// Cached image elements
+	var eImgPadlock = new Image(); eImgPadlock.src=IMG_PADLOCK;
+	var eImgMovie = new Image(); eImgMovie.src=IMG_MOVIE;
+
 	/**
 	 * Color palette for the timeline
 	 */
@@ -9,6 +17,7 @@
 
 		// Bounding box
 		ctlBoxColor		: '#000000',
+		ctlBoxDisabled	: '#999999',
 
 		// Control handlers
 		ctlHandlerMove	: '#99CCFF',
@@ -114,7 +123,7 @@
 				}
 
 				// Handle clicks on object and other positions
-				if (this.controlObject != null) {
+				if ((this.controlObject != null) && (!this.controlObject.locked)) {
 
 					// Update control point from movement
 					if (ctrlPoint != 0) {
@@ -389,6 +398,23 @@
 		// Draw the bounding box rectangle
 	    ctx.beginPath();
 		ctx.rect( bbox.left, bbox.top, bbox.width, bbox.height );
+
+		// If the object is locked, just draw the paddlock and exit
+		if (this.controlObject.locked) {
+
+			// Draw dashed border
+			if ( ctx.setLineDash !== undefined )   ctx.setLineDash([2]);
+			if ( ctx.mozDash !== undefined )       ctx.mozDash = [2];
+		    ctx.lineWidth = 0.8;
+		    ctx.strokeStyle = this.palette.ctlBoxDisabled;
+			ctx.stroke();
+	        ctx.restore();
+
+	        // Draw paddlock
+			ctx.drawImage( eImgPadlock, bbox.right-25, bbox.bottom-25 );
+			return;
+
+		}
 
 		if (this.animateMode) {
 

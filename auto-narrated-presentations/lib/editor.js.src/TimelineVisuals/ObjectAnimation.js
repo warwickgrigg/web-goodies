@@ -10,7 +10,7 @@
 		backTween: 		'#6699FF',
 		frontTween: 	'#0066CC',
 
-		backFade: 		'#99FF33',
+		backFade: 		'rgba(153,255,51,0.5)', 
 		anchorFade:  	'#669900',
 		frontFade: 		'#003300',
 
@@ -161,17 +161,34 @@
 					newDiff = this.resizeOffset - newBegin
 				this.object.begin = newBegin;
 				this.object.duration = this.resizeDuration + newDiff;
-			} else {
+			} else if (this.resizeEdge == 1) {
 				var newDuration = this.resizeDuration + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
 				this.object.duration = newDuration;
+			} else if (this.resizeEdge == 2) {
+				var newDuration = this.resizeDuration + (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
+				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
+				this.object.entryAniDuration = newDuration;
+			} else if (this.resizeEdge == 3) {
+				var newDuration = this.resizeDuration - (absolute.frame - this.resizeAnchor) * this.timeline.logic.frameWidth;
+				if (newDuration <= this.timeline.logic.frameWidth) newDuration = 0;
+				this.object.exitAniDuration = newDuration;
 			}
 
 			this.object.updateTimeline();
 
 		} else {
-			if (relative.frame == 0) {
-				$(info.canvas).css('cursor', 'ew-resize');
-			} else if (relative.frame == this.object.framesWide()-1) {
+
+			// Calculate the location of the easing anchors
+			var entryAniFrames = this.timeline.logic.frameOf( this.object.entryAniDuration ),
+				exitAniFrames = this.timeline.logic.frameOf( this.object.exitAniDuration ),
+				eaEnter = this.object.beginFrame() + entryAniFrames -1,
+				eaExit = this.object.endFrame() - exitAniFrames;
+			if (this.object.entryAniDuration == 0) eaEnter = false;
+			if (this.object.exitAniDuration == 0) eaExit = false;
+
+			// Check for cursor switching
+			if ( (relative.frame == 0) || (relative.frame == this.object.framesWide()-1) ||
+				 (absolute.frame == eaEnter) || (absolute.frame == eaExit) ) {
 				$(info.canvas).css('cursor', 'ew-resize');
 			} else {
 				$(info.canvas).css('cursor', 'default');			
@@ -180,6 +197,14 @@
 	}
 
 	ObjectAnimationVisual.prototype.mouseDown = function( relative, absolute, info ) {
+		// Calculate the location of the easing anchors
+		var entryAniFrames = this.timeline.logic.frameOf( this.object.entryAniDuration ),
+			exitAniFrames = this.timeline.logic.frameOf( this.object.exitAniDuration ),
+			eaEnter = this.object.beginFrame() + entryAniFrames -1,
+			eaExit = this.object.endFrame() - exitAniFrames;
+		if (this.object.entryAniDuration == 0) eaEnter = false;
+		if (this.object.exitAniDuration == 0) eaExit = false;
+
 		if (relative.frame == 0) {
 			this.resizing = true;
 			this.resizeAnchor = absolute.frame;
@@ -193,6 +218,18 @@
 			this.resizeAnchor = absolute.frame;
 			this.resizeDuration = this.object.duration;
 			this.resizeEdge = 1;
+			return true;
+		} else if (absolute.frame == eaEnter) {
+			this.resizing = true;
+			this.resizeAnchor = absolute.frame;
+			this.resizeDuration = this.object.entryAniDuration;
+			this.resizeEdge = 2;
+			return true;
+		} else if (absolute.frame == eaExit) {
+			this.resizing = true;
+			this.resizeAnchor = absolute.frame;
+			this.resizeDuration = this.object.exitAniDuration;
+			this.resizeEdge = 3;
 			return true;
 		}
 	}
