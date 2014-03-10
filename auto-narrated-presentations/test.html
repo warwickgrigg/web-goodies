@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<!-- Meta info -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<!-- External libraries from CDN -->
+		<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+		<!-- Development sources -->
+		<link rel="stylesheet" type="text/css" href="lib/editor.css" >
+		<script type="text/javascript" src="lib/fabric-1.4.4.js"></script>
+		<script type="text/javascript" src="lib/ppapi.js.src/include.php"></script>
+		<script type="text/javascript" src="lib/ppapi-editor.js.src/include.php"></script>
+
+		<style type="text/css">
+		.autonarrate .scene-canvas {
+			border: solid 1px #555;
+		}
+		.autonarrate .canvas-controls {
+
+			padding: 5px;
+			margin-bottom: 5px;
+			border-radius: 5px;
+
+		}
+		.autonarrate .story-back {
+			background: #666;
+			padding: 10px;
+		}
+		</style>
+
+		<script type="text/javascript">
+
+		var data = {"id":"360347647_d397f013c63e1","soundURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wav","wordURL":"http://vaas.acapela-group.com/MESSAGES/009086065076095086065065083/EVAL_1890721/sounds/360347647_d397f013c63e1.wp.txt","duration":"8300.77","size":"366112","words":[["49","Hello"],["397","world."],["1553","This"],["1761","is"],["1874","a"],["1927","test"],["2561","to"],["2703","see"],["3017","how"],["3175","we"],["3281","can"],["3479","create"],["3871","a"],["3918","simple"],["4375","timeline"],["4943","based"],["5291","on"],["5462","vocal"],["5807","words."],["6933","Does"],["7117","it"],["7249","look"],["7442","good?"]],"res":"ok"};
+
+		</script>
+	</head>
+	<body>
+
+	    <div class="container" id="scene">
+
+		</div>
+
+		<script type="text/javascript">
+		var scene = new PP.View( "#scene" );
+		</script>
+
+	</body>
+</html>
