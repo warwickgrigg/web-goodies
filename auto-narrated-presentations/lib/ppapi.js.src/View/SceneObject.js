@@ -12,6 +12,17 @@ var SceneObject = PP.Core.SceneObject = function( config, canvas, timeline ) {
 	this.canvas = canvas;
 	this.timeline = timeline;
 
+	// Default rendering variables
+	this.variables = {
+		'angle': 0, 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': '', 'stroke': '',
+		'opacity': 1.0, 'scaleX': 0, 'scaleY': 0
+	};
+
+	// Default timeline variables
+	this.timeline = {
+		
+	};
+
 };
 
 SceneObject.prototype = Object.create( Callbacks.prototype );

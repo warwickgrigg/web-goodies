@@ -24,3 +24,7 @@ PP.Core.SceneCanvas = function( host, config ) {
 	}
 
 };
+
+PP.Core.SceneCanvas.addObject = function( class, visualConfig, timeConfig ) {
+
+}
